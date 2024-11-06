@@ -1,4 +1,4 @@
-package org.example.module_6_back_end;
+package com.example.module_6_back_end;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
