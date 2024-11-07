@@ -14,9 +14,6 @@ public class Floor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToOne
-    private Building building;
     private double area;
-    @ManyToOne
-    private FloorStatus floorStatus;
+    private String floorStatus;
 }
