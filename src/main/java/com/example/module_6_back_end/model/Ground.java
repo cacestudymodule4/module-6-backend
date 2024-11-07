@@ -15,11 +15,8 @@ public class Ground {
     private Long id;
     private String name;
     @ManyToOne
-    private User user;
-    @ManyToOne
     private Floor floor;
-    @ManyToOne
-    private GroundCategory groundCategory;
+    private String groundCategory;
     private double area;
     private double price;
 }

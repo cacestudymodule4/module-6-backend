@@ -15,7 +15,5 @@ public class Building {
     private Long id;
     private String name;
     private double area;
-    @ManyToOne
-    private User user;
     private String address;
 }

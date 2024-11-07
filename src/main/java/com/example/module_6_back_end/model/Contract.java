@@ -16,12 +16,14 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private User user;
-    private double price;
+    private Staff staff;
+    private double totalPrice;
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
     @ManyToOne
     private Ground ground;
+    @ManyToOne
+    private Customer customer;
     private double deposit;
 }
