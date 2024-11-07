@@ -13,7 +13,6 @@ public class RoomFacilities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     @ManyToOne
     private Ground ground;
     private int quantity;
