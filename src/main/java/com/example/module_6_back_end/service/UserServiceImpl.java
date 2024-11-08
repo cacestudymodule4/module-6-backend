@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    private User getCurrentUser() {
+    @Override
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
