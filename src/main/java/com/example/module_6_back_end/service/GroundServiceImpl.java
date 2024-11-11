@@ -10,15 +10,15 @@ import java.util.List;
 @Service
 public class GroundServiceImpl implements GroundService {
     @Autowired
-    private GroundRepository groundRepo;
+    private GroundRepository groundRepository;
 
     @Override
     public List<Ground> getGrounds() {
-        return groundRepo.findAll();
+        return groundRepository.findAll();
     }
 
     @Override
-    public Ground getGround(long id) {
-        return groundRepo.findById(id).orElse(null);
+    public Ground getGround(Long id) {
+        return groundRepository.findById(id).orElse(null);
     }
 }

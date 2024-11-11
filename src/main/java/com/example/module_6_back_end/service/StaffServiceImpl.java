@@ -10,15 +10,15 @@ import java.util.List;
 @Service
 public class StaffServiceImpl implements StaffService {
     @Autowired
-    private StaffRepository staffRepo;
+    private StaffRepository staffRepository;
 
     @Override
     public List<Staff> getAllStaff() {
-       return staffRepo.findAll();
+       return staffRepository.findAll();
     }
 
     @Override
     public Staff getStaffById(Long id) {
-        return staffRepo.findById(id).orElse(null);
+        return staffRepository.findById(id).orElse(null);
     }
 }
