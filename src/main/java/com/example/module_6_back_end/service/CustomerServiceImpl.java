@@ -10,15 +10,15 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
-    private CustomerRepository customerRepo;
+    private CustomerRepository customerRepository;
 
     @Override
     public List<Customer> getCustomers() {
-        return customerRepo.findAll();
+        return customerRepository.findAll();
     }
 
     @Override
     public Customer findByIdentification(String identification) {
-        return customerRepo.findByIdentification(identification);
+        return customerRepository.findByIdentification(identification);
     }
 }

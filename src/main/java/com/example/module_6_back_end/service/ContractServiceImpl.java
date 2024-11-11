@@ -19,8 +19,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Contract getContractById(long id) {
-        return iContractRepository.findById(id).get();
+    public Contract getContractById(Long id) {
+        return iContractRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void deleteContract(long id) {
+    public void deleteContract(Long id) {
         iContractRepository.deleteById(id);
     }
 

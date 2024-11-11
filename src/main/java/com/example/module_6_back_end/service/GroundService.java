@@ -7,5 +7,5 @@ import java.util.List;
 public interface GroundService {
     List<Ground> getGrounds();
 
-    Ground getGround(long id);
+    Ground getGround(Long id);
 }
