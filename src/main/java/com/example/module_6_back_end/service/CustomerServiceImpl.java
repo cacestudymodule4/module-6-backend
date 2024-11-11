@@ -18,10 +18,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public boolean deleteCustomer(Long id) {
-
+    public void deleteCustomer(Long id) {
+        Customer customer = findCustomer(id);
+        if (customer == null) {
+            throw new IllegalArgumentException("Không tìm thấy khách hàng");
+        }
         customerRepository.deleteById(id);
-        return true;
     }
 
     @Override
@@ -55,5 +57,15 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setCompany(updatedCustomer.getCompany());
         return customerRepository.save(existingCustomer);
+    }
+
+    @Override
+    public Customer findByIdentification(String identification) {
+        return customerRepository.findByIdentification(identification);
+    }
+
+    @Override
+    public Customer findCustomer(Long id) {
+        return customerRepository.findById(id).orElse(null);
     }
 }

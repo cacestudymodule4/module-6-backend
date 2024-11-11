@@ -15,15 +15,18 @@ public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private Staff staff;
+    private String taxCode;
     private double totalPrice;
     private LocalDate startDate;
     private LocalDate endDate;
     private String description;
+    private double deposit;
+    private Long term;
+    @ManyToOne
+    private Staff staff;
     @ManyToOne
     private Ground ground;
     @ManyToOne
     private Customer customer;
-    private double deposit;
+
 }
