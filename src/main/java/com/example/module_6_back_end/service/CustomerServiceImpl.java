@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public boolean deleteCustomer(Long id) {
-//Xóa thêm contract id vì dính khóa ngoại
+
         customerRepository.deleteById(id);
         return true;
     }
@@ -30,25 +30,23 @@ public class CustomerServiceImpl implements CustomerService {
             throw new IllegalArgumentException("Duplicate Email");
         }
         if (customerRepository.existsByIdentification(customer.getIdentification())) {
-                throw new IllegalArgumentException("Duplicate Identification");
+            throw new IllegalArgumentException("Duplicate Identification");
         }
         return customerRepository.save(customer);
     }
+
     @Override
     public Customer updateCustomer(Long id, Customer updatedCustomer) {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng"));
-
         if (!existingCustomer.getEmail().equals(updatedCustomer.getEmail()) &&
                 customerRepository.existsByEmail(updatedCustomer.getEmail())) {
             throw new IllegalArgumentException("Email bị trùng lặp");
         }
-
         if (!existingCustomer.getIdentification().equals(updatedCustomer.getIdentification()) &&
                 customerRepository.existsByIdentification(updatedCustomer.getIdentification())) {
             throw new IllegalArgumentException("Chứng minh nhân dân bị trùng lặp");
         }
-
         existingCustomer.setName(updatedCustomer.getName());
         existingCustomer.setBirthday(updatedCustomer.getBirthday());
         existingCustomer.setIdentification(updatedCustomer.getIdentification());
@@ -56,7 +54,6 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setPhone(updatedCustomer.getPhone());
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setCompany(updatedCustomer.getCompany());
-
         return customerRepository.save(existingCustomer);
     }
 }
