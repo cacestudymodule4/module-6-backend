@@ -8,4 +8,10 @@ public interface StaffService {
     List<Staff> getAllStaff();
 
     boolean deleteStaff(Long id);
+
+    List<Staff> searchStaff(String keyword);
+
+    Staff updateStaff(Long id, Staff staff);
+
+    Staff getStaffById(Long id);
 }

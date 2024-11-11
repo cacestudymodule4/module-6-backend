@@ -31,4 +31,15 @@ public class StaffController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Staff>> searchStaff(@RequestParam String keyword) {
+        List<Staff> staffList = staffService.searchStaff(keyword);
+        return ResponseEntity.ok(staffList);
+    }
+
+    @GetMapping("/{id}")
+    public Staff getStaffById(@PathVariable Long id) {
+        return staffService.getStaffById(id);
+    }
 }
