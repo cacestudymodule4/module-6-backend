@@ -55,7 +55,7 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
         }
     }
-    
+
     @GetMapping("/api/customer/list")
     public ResponseEntity<List<Customer>> list() {
         return ResponseEntity.ok().body(customerService.getCustomers());

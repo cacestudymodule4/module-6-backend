@@ -11,6 +11,8 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ContractService contractService;
 
     @Override
     public List<Customer> getCustomers() {
@@ -23,6 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customer == null) {
             throw new IllegalArgumentException("Không tìm thấy khách hàng");
         }
+        contractService.deleteContracts(customer);
         customerRepository.deleteById(id);
     }
 
