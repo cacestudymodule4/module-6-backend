@@ -10,15 +10,65 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
-    private CustomerRepository customerRepo;
+    private CustomerRepository customerRepository;
+    @Autowired
+    private ContractService contractService;
 
     @Override
     public List<Customer> getCustomers() {
-        return customerRepo.findAll();
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public void deleteCustomer(Long id) {
+        Customer customer = findCustomer(id);
+        if (customer == null) {
+            throw new IllegalArgumentException("Không tìm thấy khách hàng");
+        }
+        contractService.deleteContracts(customer);
+        customerRepository.deleteById(id);
+    }
+
+    @Override
+    public Customer saveCustomer(Customer customer) {
+        if (customerRepository.existsByEmail(customer.getEmail())) {
+            throw new IllegalArgumentException("Duplicate Email");
+        }
+        if (customerRepository.existsByIdentification(customer.getIdentification())) {
+            throw new IllegalArgumentException("Duplicate Identification");
+        }
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer updateCustomer(Long id, Customer updatedCustomer) {
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khách hàng"));
+        if (!existingCustomer.getEmail().equals(updatedCustomer.getEmail()) &&
+                customerRepository.existsByEmail(updatedCustomer.getEmail())) {
+            throw new IllegalArgumentException("Email bị trùng lặp");
+        }
+        if (!existingCustomer.getIdentification().equals(updatedCustomer.getIdentification()) &&
+                customerRepository.existsByIdentification(updatedCustomer.getIdentification())) {
+            throw new IllegalArgumentException("Chứng minh nhân dân bị trùng lặp");
+        }
+        existingCustomer.setName(updatedCustomer.getName());
+        existingCustomer.setBirthday(updatedCustomer.getBirthday());
+        existingCustomer.setIdentification(updatedCustomer.getIdentification());
+        existingCustomer.setAddress(updatedCustomer.getAddress());
+        existingCustomer.setPhone(updatedCustomer.getPhone());
+        existingCustomer.setEmail(updatedCustomer.getEmail());
+        existingCustomer.setCompany(updatedCustomer.getCompany());
+        return customerRepository.save(existingCustomer);
     }
 
     @Override
     public Customer findByIdentification(String identification) {
-        return customerRepo.findByIdentification(identification);
+        return customerRepository.findByIdentification(identification);
+    }
+
+    @Override
+    public Customer findCustomer(Long id) {
+        return customerRepository.findById(id).orElse(null);
     }
 }

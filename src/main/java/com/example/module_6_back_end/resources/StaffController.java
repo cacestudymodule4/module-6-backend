@@ -20,7 +20,7 @@
             this.staffService = staffService;
         }
 
-        @GetMapping
+        @GetMapping("/list")
         public ResponseEntity<List<Staff>> getAllStaff() {
             List<Staff> staffList = staffService.getAllStaff();
             return ResponseEntity.ok(staffList);

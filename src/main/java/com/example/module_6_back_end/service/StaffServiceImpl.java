@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Service
 public class StaffServiceImpl implements StaffService {
+
     private final StaffRepository staffRepository;
 
     public StaffServiceImpl(StaffRepository staffRepository) {
@@ -52,9 +53,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff getStaffById(Long id) {
+    public Staff getStaffById (Long id){
         Optional<Staff> staff = staffRepository.findById(id);
         return staff.orElse(null);
     }
-
 }
