@@ -22,7 +22,7 @@ public class RegisterService {
     public void registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be null or empty");
+            throw new IllegalArgumentException("Email đã tồn tại");
         }
         User newUser = userRepository.save(user);
         Role role = new Role();
