@@ -16,7 +16,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/api/user-detail")
+    @GetMapping("/api/user/detail")
     public ResponseEntity<UserDTO> getUserDetail() {
         User user = userService.getCurrentUser();
         UserDTO userDTO = new UserDTO();
