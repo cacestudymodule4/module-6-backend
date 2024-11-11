@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Contract;
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,31 +12,31 @@ import java.util.List;
 @Service
 public class ContractServiceImpl implements ContractService {
     @Autowired
-    private ContractRepository iContractRepository;
+    private ContractRepository contractRepository;
 
     @Override
     public List<Contract> getContracts() {
-        return iContractRepository.findAll();
+        return contractRepository.findAll();
     }
 
     @Override
     public Contract getContractById(Long id) {
-        return iContractRepository.findById(id).orElse(null);
+        return contractRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer) {
-        return iContractRepository.searchContract(startDate, endDate, taxCode, nameCustomer);
+        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer);
     }
 
     @Override
     public void saveContract(Contract contract) {
-        iContractRepository.save(contract);
+        contractRepository.save(contract);
     }
 
     @Override
     public void deleteContract(Long id) {
-        iContractRepository.deleteById(id);
+        contractRepository.deleteById(id);
     }
 
     public String generateUniqueTaxCode() {
@@ -55,6 +56,17 @@ public class ContractServiceImpl implements ContractService {
             }
         } while (!isUnique);
         return texCodeStr;
+    }
+
+    @Override
+    public List<Contract> getContractsByCustomer(Customer customer) {
+        return contractRepository.findByCustomer(customer);
+    }
+
+    @Override
+    public void deleteContracts(Customer customer) {
+        List<Contract> contracts = getContractsByCustomer(customer);
+        contractRepository.deleteAll(contracts);
     }
 }
 

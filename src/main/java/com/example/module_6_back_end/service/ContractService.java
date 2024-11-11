@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Contract;
+import com.example.module_6_back_end.model.Customer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,4 +18,8 @@ public interface ContractService {
     void deleteContract(Long id);
 
     String generateUniqueTaxCode();
+
+    List<Contract> getContractsByCustomer(Customer customer);
+
+    void deleteContracts(Customer customer);
 }
