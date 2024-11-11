@@ -1,5 +1,7 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.model.Contract;
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,11 @@ import java.util.Optional;
 public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
+    private final ContractService contractService;
 
-    public StaffServiceImpl(StaffRepository staffRepository) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService) {
         this.staffRepository = staffRepository;
+        this.contractService = contractService;
     }
 
     @Override
@@ -22,12 +26,18 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public boolean deleteStaff(Long id) {
-        if (staffRepository.existsById(id)) {
-            staffRepository.deleteById(id);
-            return true;
+    public Staff findStaff(Long id) {
+        return staffRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteStaff(Long id) {
+        Staff staff = findStaff(id);
+        if (staff == null) {
+            throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
         }
-        return false;
+        contractService.deleteContracts(staff);
+        staffRepository.deleteById(id);
     }
 
     @Override
@@ -53,8 +63,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff getStaffById (Long id){
+    public Staff getStaffById(Long id) {
         Optional<Staff> staff = staffRepository.findById(id);
         return staff.orElse(null);
+    }
+
+    @Override
+    public Staff saveStaff(Staff staff) {
+        return null;
     }
 }
