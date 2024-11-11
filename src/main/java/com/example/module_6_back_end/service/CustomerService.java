@@ -8,4 +8,8 @@ public interface CustomerService {
     List<Customer> getCustomers();
 
     boolean deleteCustomer(Long id);
+
+    Customer saveCustomer(Customer customer);
+
+    Customer updateCustomer(Long id, Customer updatedCustomer);
 }
