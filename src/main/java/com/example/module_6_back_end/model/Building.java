@@ -14,6 +14,8 @@ public class Building {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String phoneNumber;
+    private String email;
     private double area;
     private String address;
 }
