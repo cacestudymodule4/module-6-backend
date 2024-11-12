@@ -1,7 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import java.util.Optional;
 
 @Service
 public class StaffServiceImpl implements StaffService {
-
     private final StaffRepository staffRepository;
     private final ContractService contractService;
 

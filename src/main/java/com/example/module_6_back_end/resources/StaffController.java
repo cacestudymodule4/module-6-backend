@@ -39,7 +39,6 @@ public class StaffController {
 
     @PostMapping("/add")
     public ResponseEntity<Void> addStaff(@RequestBody Staff staff) {
-
         return ResponseEntity.ok().build();
     }
 
@@ -53,6 +52,4 @@ public class StaffController {
     public Staff getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
     }
-
-
 }

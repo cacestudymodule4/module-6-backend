@@ -1,6 +1,6 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.dto.ContractDto;
+import com.example.module_6_back_end.dto.ContractDTO;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Ground;
@@ -65,7 +65,7 @@ public class ContractController {
 
     @PostMapping("/add")
     public ResponseEntity<Void> add(
-            @RequestBody ContractDto contractDto
+            @RequestBody ContractDTO contractDto
     ) {
         System.out.println(contractDto.getTerm());
         Ground ground = groundService.getGround(contractDto.getGround());
