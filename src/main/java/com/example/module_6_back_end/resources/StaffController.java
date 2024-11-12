@@ -1,8 +1,6 @@
 package com.example.module_6_back_end.resources;
-
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.service.StaffService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +55,4 @@ public class StaffController {
     public Staff getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
     }
-
-
 }

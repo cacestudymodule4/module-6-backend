@@ -9,7 +9,7 @@ import java.util.List;
 public interface StaffService {
     List<Staff> getAllStaff();
 
-    Staff findStaff(Long id);
+    Staff getStaffId(Long id);
 
     void deleteStaff(Long id);
 

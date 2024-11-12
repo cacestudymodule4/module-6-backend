@@ -1,7 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +9,6 @@ import java.util.Optional;
 
 @Service
 public class StaffServiceImpl implements StaffService {
-
     private final StaffRepository staffRepository;
     private final ContractService contractService;
 
@@ -26,13 +23,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff findStaff(Long id) {
+    public Staff getStaffId(Long id) {
         return staffRepository.findById(id).orElse(null);
     }
 
     @Override
     public void deleteStaff(Long id) {
-        Staff staff = findStaff(id);
+        Staff staff = getStaffId(id);
         if (staff == null) {
             throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
         }
