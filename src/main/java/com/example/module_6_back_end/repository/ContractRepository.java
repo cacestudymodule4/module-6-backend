@@ -2,6 +2,7 @@ package com.example.module_6_back_end.repository;
 
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                                   @Param("taxCode") String taxCode,
                                   @Param("nameCustomer") String nameCustomer);
     List<Contract> findByCustomer(Customer customer);
+
+    List<Contract> findByStaff(Staff staff);
 }
