@@ -2,7 +2,6 @@ package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.service.StaffService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,18 +37,51 @@ public class StaffController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addStaff(@RequestBody Staff staff) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
+        if (staffService.existsByCodeStaff(staff.getCodeStaff())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Mã nhân viên đã tồn tại");
+        }
+
+        if (staffService.existsByEmail(staff.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email đã tồn tại");
+        }
+
+        if (staffService.existsByPhone(staff.getPhone())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Số điện thoại đã tồn tại");
+        }
+
+        try {
+            Staff savedStaff = staffService.saveStaff(staff);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedStaff);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong quá trình thêm");
+        }
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Staff>> searchStaff(@RequestParam String keyword) {
-        List<Staff> staffList = staffService.searchStaff(keyword);
-        return ResponseEntity.ok(staffList);
+    public ResponseEntity<List<Staff>> searchStaff(@RequestParam(required = false) String codeStaff,
+                                                   @RequestParam(required = false) String name,
+                                                   @RequestParam(required = false) String position) {
+        List<Staff> staffList = staffService.searchStaff(codeStaff, name, position);
+        return ResponseEntity.ok().body(staffList);
     }
 
     @GetMapping("/{id}")
     public Staff getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editStaff(@PathVariable Long id, @RequestBody Staff staff) {
+        try {
+            Staff updatedStaff = staffService.updateStaff(id, staff);
+            if (updatedStaff != null) {
+                return ResponseEntity.ok(updatedStaff);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nhân viên không tồn tại");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi cập nhật nhân viên");
+        }
     }
 }

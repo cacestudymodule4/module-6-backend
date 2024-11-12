@@ -38,25 +38,26 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> searchStaff(String keyword) {
-        return staffRepository.findByNameContainingIgnoreCase(keyword);
+    public List<Staff> searchStaff(String codeStaff, String name, String position) {
+        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position);
     }
 
     @Override
     public Staff updateStaff(Long id, Staff staff) {
         Optional<Staff> existingStaff = staffRepository.findById(id);
         if (existingStaff.isPresent()) {
-            Staff updateStaff = existingStaff.get();
-            updateStaff.setName(staff.getName());
-            updateStaff.setAddress(staff.getAddress());
-            updateStaff.setEmail(staff.getEmail());
-            updateStaff.setPhone(staff.getPhone());
-            updateStaff.setSalary(staff.getSalary());
-            updateStaff.setStartDate(staff.getStartDate());
-            return staffRepository.save(staff);
-        } else {
-            return null;
+            Staff staffToUpdate = existingStaff.get();
+            staffToUpdate.setName(staff.getName());
+            staffToUpdate.setEmail(staff.getEmail());
+            staffToUpdate.setPhone(staff.getPhone());
+            staffToUpdate.setAddress(staff.getAddress());
+            staffToUpdate.setBirthDate(staff.getBirthDate());
+            staffToUpdate.setSalary(staff.getSalary());
+            staffToUpdate.setStartDate(staff.getStartDate());
+            staffToUpdate.setPosition(staff.getPosition());
+            return staffRepository.save(staffToUpdate);
         }
+        return null;
     }
 
     @Override
@@ -67,6 +68,18 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        return null;
+        return staffRepository.save(staff);
+    }
+
+    public boolean existsByEmail(String email) {
+        return staffRepository.existsByEmail(email);
+    }
+
+    public boolean existsByPhone(String phone) {
+        return staffRepository.existsByPhone(phone);
+    }
+
+    public boolean existsByCodeStaff(String codeStaff) {
+        return staffRepository.existsByCodeStaff(codeStaff);
     }
 }

@@ -15,6 +15,7 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String codeStaff;
     private String name;
     private LocalDate birthDate;
     private boolean gender;
@@ -23,4 +24,5 @@ public class Staff {
     private String email;
     private double salary;
     private LocalDate startDate;
+    private String position;
 }
