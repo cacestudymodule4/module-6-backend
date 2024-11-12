@@ -26,7 +26,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff findStaff(Long id) {
+    public Staff getStaffId(Long id) {
         return staffRepository.findById(id).orElse(null);
     }
 
