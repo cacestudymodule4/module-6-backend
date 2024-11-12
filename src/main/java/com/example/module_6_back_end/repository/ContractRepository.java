@@ -23,6 +23,5 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,
                                   @Param("nameCustomer") String nameCustomer);
-
     List<Contract> findByCustomer(Customer customer);
 }
