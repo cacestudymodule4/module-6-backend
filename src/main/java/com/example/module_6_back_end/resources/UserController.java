@@ -1,6 +1,6 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.dto.UserDTO;
+import com.example.module_6_back_end.dto.UserResponse;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -17,9 +17,9 @@ public class UserController {
     }
 
     @GetMapping("/api/user/detail")
-    public ResponseEntity<UserDTO> getUserDetail() {
+    public ResponseEntity<UserResponse> getUserDetail() {
         User user = userService.getCurrentUser();
-        UserDTO userDTO = new UserDTO();
+        UserResponse userDTO = new UserResponse();
         BeanUtils.copyProperties(user, userDTO);
         return ResponseEntity.ok().body(userDTO);
     }
