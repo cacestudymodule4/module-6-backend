@@ -29,5 +29,4 @@ public class Contract {
     private Ground ground;
     @ManyToOne
     private Customer customer;
-
 }
