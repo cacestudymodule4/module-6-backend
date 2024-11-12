@@ -32,7 +32,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public void deleteStaff(Long id) {
-        Staff staff = findStaff(id);
+        Staff staff = getStaffId(id);
         if (staff == null) {
             throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
         }
