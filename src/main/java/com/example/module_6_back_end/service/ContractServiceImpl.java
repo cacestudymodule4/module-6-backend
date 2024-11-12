@@ -2,6 +2,7 @@ package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,17 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void deleteContracts(Customer customer) {
         List<Contract> contracts = getContractsByCustomer(customer);
+        contractRepository.deleteAll(contracts);
+    }
+
+    @Override
+    public List<Contract> getContractsByStaff(Staff staff) {
+        return contractRepository.findByStaff(staff);
+    }
+
+    @Override
+    public void deleteContracts(Staff staff) {
+        List<Contract> contracts = getContractsByStaff(staff);
         contractRepository.deleteAll(contracts);
     }
 }
