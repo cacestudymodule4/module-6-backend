@@ -70,6 +70,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        return null;
+        return staffRepository.save(staff);
     }
 }

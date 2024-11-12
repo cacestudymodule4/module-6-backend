@@ -38,9 +38,13 @@ public class StaffController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Void> addStaff(@RequestBody Staff staff) {
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
+        try {
+            Staff savedStaff = staffService.saveStaff(staff);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedStaff);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/search")
