@@ -88,6 +88,25 @@ public class ContractController {
         contractService.saveContract(contract);
         return ResponseEntity.ok().build();
     }
+    @PutMapping("/save")
+    public ResponseEntity<Void> save(
+            @RequestBody ContractDTO contractDto
+    ){
+        System.out.println( contractDto.getId());
+        Ground ground = groundService.getGround(contractDto.getGround());
+        Staff staff = staffService.getStaffById(contractDto.getStaffId());
+        double totalPrice = ground.getPrice()*contractDto.getTerm();
+        Contract contract = contractService.getContractById(contractDto.getId());
+        contract.setDescription(contractDto.getContent());
+        contract.setStartDate(contractDto.getStartDay());
+        contract.setEndDate(contractDto.getEndDay());
+        contract.setTerm(contractDto.getTerm());
+        contract.setStaff(staff);
+        contract.setGround(ground);
+        contract.setTotalPrice(totalPrice);
+        contractService.saveContract(contract);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/findContract")
     public ResponseEntity<Contract> findContract(@RequestParam long id) {

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContractDTO {
+    private Long id;
     private String cmd;
     private Long staffId;
     private Long term;
@@ -19,4 +20,5 @@ public class ContractDTO {
     private double price;
     private double deposit;
     private String content;
+
 }
