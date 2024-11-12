@@ -24,7 +24,17 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,
                                   @Param("nameCustomer") String nameCustomer);
+
     List<Contract> findByCustomer(Customer customer);
 
     List<Contract> findByStaff(Staff staff);
+
+    @Query("SELECT c FROM Contract c WHERE c.startDate >= :startDate AND c.endDate <= :endDate")
+    List<Contract> findByStartDateAndEndDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT c FROM Contract c WHERE c.startDate >= :startDate")
+    List<Contract> findByStartDate(@Param("startDate") LocalDate startDate);
+
+    @Query("SELECT c FROM Contract c WHERE c.endDate <= :endDate")
+    List<Contract> findByEndDate(@Param("endDate") LocalDate endDate);
 }
