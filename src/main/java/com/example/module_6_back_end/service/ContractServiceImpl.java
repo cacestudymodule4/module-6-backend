@@ -80,5 +80,26 @@ public class ContractServiceImpl implements ContractService {
         List<Contract> contracts = getContractsByStaff(staff);
         contractRepository.deleteAll(contracts);
     }
+
+    @Override
+    public String generateCode() {
+            String id;
+            boolean isUnique;
+            List<Contract> list = getContracts();
+            do {
+                long randomNum = (long) (Math.random() * 100000);
+                String randomNumStr = String.format("%05d", randomNum);
+                id = "MB" + randomNumStr;
+                isUnique = true;
+                for (Contract con : list) {
+                    if (con.getTaxCode().equals(id)) {
+                        isUnique = false;
+                        break;
+                    }
+                }
+            } while (!isUnique);
+            return id;
+        }
+
 }
 

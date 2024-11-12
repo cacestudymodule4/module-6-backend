@@ -20,6 +20,8 @@ public interface ContractService {
 
     String generateUniqueTaxCode();
 
+    String generateCode();
+
     List<Contract> getContractsByCustomer(Customer customer);
 
     void deleteContracts(Customer customer);

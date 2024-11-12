@@ -15,6 +15,7 @@ public class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String code;
     private String taxCode;
     private double totalPrice;
     private LocalDate startDate;

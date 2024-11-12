@@ -59,7 +59,7 @@ public class ContractController {
         LocalDate startDate = startDateStr.isEmpty() ? null : LocalDate.parse(startDateStr);
         LocalDate endDate = endDateStr.isEmpty() ? null : LocalDate.parse(endDateStr);
         System.out.println(nameCustomer);
-        List<Contract> contracts = contractService.searchContract(startDate, endDate,taxCode,nameCustomer);
+        List<Contract> contracts = contractService.searchContract(startDate, endDate, taxCode, nameCustomer);
         return ResponseEntity.ok().body(contracts);
     }
 
@@ -78,24 +78,27 @@ public class ContractController {
         contract.setCustomer(customer);
         contract.setDescription(contractDto.getContent());
         contract.setDeposit((long) contractDto.getDeposit());
-        contract.setTotalPrice((long) contractDto.getPrice()*contractDto.getTerm());
+        contract.setTotalPrice((long) contractDto.getPrice() * contractDto.getTerm());
         contract.setTerm(contractDto.getTerm());
-        contract.setStartDate( contractDto.getStartDay());
+        contract.setStartDate(contractDto.getStartDay());
         contract.setEndDate(contractDto.getEndDay());
-       String texCodeStr = contractService.generateUniqueTaxCode();
+        String texCodeStr = contractService.generateUniqueTaxCode();
+        String codeStr = contractService.generateCode();
+        contract.setCode(codeStr);
         contract.setTaxCode(texCodeStr);
         System.out.println(contract);
         contractService.saveContract(contract);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("/save")
     public ResponseEntity<Void> save(
             @RequestBody ContractDTO contractDto
-    ){
-        System.out.println( contractDto.getId());
+    ) {
+        System.out.println(contractDto.getId());
         Ground ground = groundService.getGround(contractDto.getGround());
         Staff staff = staffService.getStaffById(contractDto.getStaffId());
-        double totalPrice = ground.getPrice()*contractDto.getTerm();
+        double totalPrice = ground.getPrice() * contractDto.getTerm();
         Contract contract = contractService.getContractById(contractDto.getId());
         contract.setDescription(contractDto.getContent());
         contract.setStartDate(contractDto.getStartDay());
