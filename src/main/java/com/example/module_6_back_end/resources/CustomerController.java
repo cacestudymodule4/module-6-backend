@@ -1,8 +1,11 @@
 package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +20,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/api/customers")
-    public ResponseEntity<List<Customer>> getAllCustomers() {
-        List<Customer> customerList = customerService.getCustomers();
-        return ResponseEntity.ok(customerList);
+    public Page<Customer> getAllCustomers(Pageable pageable) {
+        return customerService.getAllCustomers(pageable);
     }
 
     @DeleteMapping("/api/customers/delete/{id}")
@@ -59,5 +61,18 @@ public class CustomerController {
     @GetMapping("/api/customer/list")
     public ResponseEntity<List<Customer>> list() {
         return ResponseEntity.ok().body(customerService.getCustomers());
+    }
+
+    @GetMapping("/api/customers/{customerId}/services")
+    public ResponseEntity<List<Services>> getServicesByCustomerId(@PathVariable Long customerId) {
+        List<Services> services = customerService.getServicesByCustomerId(customerId);
+        return ResponseEntity.ok(services);
+    }
+    @GetMapping("/api/customers/search")
+    public Page<Customer> searchCustomers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String identification,
+            Pageable pageable) {
+        return customerService.searchCustomers(name, identification, pageable);
     }
 }
