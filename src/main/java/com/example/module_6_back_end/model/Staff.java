@@ -23,4 +23,5 @@ public class Staff {
     private String email;
     private double salary;
     private LocalDate startDate;
+    private String position;
 }

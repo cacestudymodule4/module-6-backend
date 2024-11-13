@@ -14,7 +14,7 @@ public class RegisterController {
     }
 
     @PostMapping("api/register")
-    public ResponseEntity<?> registerUser(@ModelAttribute("user") User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
             registerService.registerUser(user);
             return ResponseEntity.ok().build();
