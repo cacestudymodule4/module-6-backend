@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ground_id", "service_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ground_id", "services_id"}))
 public class GroundService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,5 +17,5 @@ public class GroundService {
     @ManyToOne
     private Ground ground;
     @ManyToOne
-    private Service service;
+    private Services services;
 }
