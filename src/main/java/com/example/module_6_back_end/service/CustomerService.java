@@ -25,5 +25,5 @@ public interface CustomerService {
 
     List<Services> getServicesByCustomerId(Long customerId);
 
-    public Page<Customer> searchCustomers(String name, String identification, Pageable pageable);
+    Page<Customer> searchCustomers(String name, String identification, Pageable pageable);
 }

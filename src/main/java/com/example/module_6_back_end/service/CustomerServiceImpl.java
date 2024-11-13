@@ -24,6 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Page<Customer> getAllCustomers(Pageable pageable) {
         return customerRepository.findAll(pageable);
     }
+
     @Override
     public List<Customer> getCustomers() {
         return customerRepository.findAll();
@@ -81,10 +82,12 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomer(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
+
     @Override
     public List<Services> getServicesByCustomerId(Long customerId) {
         return contractRepository.findServicesByCustomerId(customerId);
     }
+
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
         if (name != null && identification != null) {
