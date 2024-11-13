@@ -23,9 +23,7 @@ public class CustomerController {
 
     @GetMapping("/list")
     public ResponseEntity<Page<Customer>> getAllCustomers( @RequestParam("page") int page,@RequestParam("size") int size) {
-        System.out.println("OK");
         Pageable pageable = PageRequest.of(page, size);
-        System.out.println(pageable);
         try {
             return ResponseEntity.ok().body(customerService.getAllCustomers(pageable));
         }catch (Exception e) {
