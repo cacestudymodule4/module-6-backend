@@ -1,6 +1,6 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.dto.ContractDto;
+import com.example.module_6_back_end.dto.ContractDTO;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Ground;
@@ -65,7 +65,7 @@ public class ContractController {
 
     @PostMapping("/add")
     public ResponseEntity<Void> add(
-            @RequestBody ContractDto contractDto
+            @RequestBody ContractDTO contractDto
     ) {
         System.out.println(contractDto.getTerm());
         Ground ground = groundService.getGround(contractDto.getGround());
@@ -85,6 +85,25 @@ public class ContractController {
        String texCodeStr = contractService.generateUniqueTaxCode();
         contract.setTaxCode(texCodeStr);
         System.out.println(contract);
+        contractService.saveContract(contract);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/save")
+    public ResponseEntity<Void> save(
+            @RequestBody ContractDTO contractDto
+    ){
+        System.out.println( contractDto.getId());
+        Ground ground = groundService.getGround(contractDto.getGround());
+        Staff staff = staffService.getStaffById(contractDto.getStaffId());
+        double totalPrice = ground.getPrice()*contractDto.getTerm();
+        Contract contract = contractService.getContractById(contractDto.getId());
+        contract.setDescription(contractDto.getContent());
+        contract.setStartDate(contractDto.getStartDay());
+        contract.setEndDate(contractDto.getEndDay());
+        contract.setTerm(contractDto.getTerm());
+        contract.setStaff(staff);
+        contract.setGround(ground);
+        contract.setTotalPrice(totalPrice);
         contractService.saveContract(contract);
         return ResponseEntity.ok().build();
     }
