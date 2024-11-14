@@ -13,7 +13,7 @@ public interface StaffService {
 
     void deleteStaff(Long id);
 
-    List<Staff> searchStaff(String keyword);
+    List<Staff> searchStaff(String codeStaff, String name, String position);
 
     Staff updateStaff(Long id, Staff staff);
 
@@ -21,5 +21,13 @@ public interface StaffService {
 
     Staff saveStaff(Staff staff);
 
+<<<<<<< HEAD
     List<Staff> findByNameContaining(String name);
+=======
+    boolean existsByCodeStaff(String codeStaff);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
+>>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
 }

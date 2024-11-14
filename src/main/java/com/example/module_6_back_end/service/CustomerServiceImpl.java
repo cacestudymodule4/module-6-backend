@@ -1,8 +1,12 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Services;
+import com.example.module_6_back_end.repository.ContractRepository;
 import com.example.module_6_back_end.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +17,13 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private ContractService contractService;
+    @Autowired
+    private ContractRepository contractRepository;
+
+    @Override
+    public Page<Customer> getAllCustomers(Pageable pageable) {
+        return customerRepository.findAll(pageable);
+    }
 
     @Override
     public List<Customer> getCustomers() {
@@ -32,10 +43,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer saveCustomer(Customer customer) {
         if (customerRepository.existsByEmail(customer.getEmail())) {
-            throw new IllegalArgumentException("Duplicate Email");
+            throw new IllegalArgumentException("Email bị trùng lặp");
         }
         if (customerRepository.existsByIdentification(customer.getIdentification())) {
-            throw new IllegalArgumentException("Duplicate Identification");
+            throw new IllegalArgumentException("CMND bị trùng lặp");
         }
         return customerRepository.save(customer);
     }
@@ -73,7 +84,25 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+<<<<<<< HEAD
     public List<Customer> findCustomerByName(String name) {
         return customerRepository.findByNameContaining(name);
+=======
+    public List<Services> getServicesByCustomerId(Long customerId) {
+        return contractRepository.findServicesByCustomerId(customerId);
+    }
+
+    @Override
+    public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
+        if (name != null && identification != null) {
+            return customerRepository.findByNameContainingAndIdentificationContaining(name, identification, pageable);
+        } else if (name != null) {
+            return customerRepository.findByNameContaining(name, pageable);
+        } else if (identification != null) {
+            return customerRepository.findByIdentificationContaining(identification, pageable);
+        } else {
+            return customerRepository.findAll(pageable);
+        }
+>>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
     }
 }
