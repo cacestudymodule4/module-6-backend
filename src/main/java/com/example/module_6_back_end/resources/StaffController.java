@@ -2,6 +2,10 @@ package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.service.StaffService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +25,13 @@ public class StaffController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Staff>> getAllStaff() {
-        List<Staff> staffList = staffService.getAllStaff();
-        return ResponseEntity.ok(staffList);
+    public ResponseEntity<Page<Staff>> getAllStaff(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Staff> staffPage = staffService.getAllStaff(pageRequest);
+        return new ResponseEntity<>(staffPage, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

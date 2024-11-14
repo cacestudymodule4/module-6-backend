@@ -2,6 +2,8 @@ package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> getAllStaff() {
-        return staffRepository.findAll();
+    public Page<Staff> getAllStaff(PageRequest pageRequest) {
+        return staffRepository.findAll(pageRequest);
     }
 
     @Override

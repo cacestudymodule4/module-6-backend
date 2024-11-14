@@ -1,13 +1,13 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface StaffService {
-    List<Staff> getAllStaff();
+    Page<Staff> getAllStaff(PageRequest pageRequest);
 
     Staff getStaffId(Long id);
 
