@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Ground;
+import com.example.module_6_back_end.model.GroundServices;
 import com.example.module_6_back_end.repository.GroundRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,9 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public Ground getGround(Long id) {
         return groundRepository.findById(id).orElse(null);
+    }
+    public void deleteGroundByService(Long ServiceId){
+        List<Ground> groundServiceList = groundRepository.findGroundsByServiceId(ServiceId);
+        groundRepository.deleteAll();
     }
 }
