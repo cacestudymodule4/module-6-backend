@@ -84,10 +84,9 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-<<<<<<< HEAD
+
     public List<Customer> findCustomerByName(String name) {
         return customerRepository.findByNameContaining(name);
-=======
     public List<Services> getServicesByCustomerId(Long customerId) {
         return contractRepository.findServicesByCustomerId(customerId);
     }
@@ -103,6 +102,6 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             return customerRepository.findAll(pageable);
         }
->>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
+
     }
 }
