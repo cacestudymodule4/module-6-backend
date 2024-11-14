@@ -17,8 +17,7 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private ContractService contractService;
-    @Autowired
-    private ContractRepository contractRepository;
+
 
     @Override
     public Page<Customer> getAllCustomers(Pageable pageable) {
@@ -83,10 +82,6 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public List<Services> getServicesByCustomerId(Long customerId) {
-        return contractRepository.findServicesByCustomerId(customerId);
-    }
 
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {

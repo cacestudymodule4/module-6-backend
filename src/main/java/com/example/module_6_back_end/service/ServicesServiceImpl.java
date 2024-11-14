@@ -12,7 +12,13 @@ public class ServicesServiceImpl implements ServicesService{
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @Override
     public Page<Services> getAllServices (Pageable pageable) {
         return serviceRepository.findAll(pageable);
+    }
+
+    public void deleteServiceById(Long id){
+
+        serviceRepository.deleteById(id);
     }
 }
