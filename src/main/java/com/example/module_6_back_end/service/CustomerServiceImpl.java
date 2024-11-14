@@ -17,8 +17,7 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
     @Autowired
     private ContractService contractService;
-    @Autowired
-    private ContractRepository contractRepository;
+
 
     @Override
     public Page<Customer> getAllCustomers(Pageable pageable) {
@@ -89,8 +88,6 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByNameContaining(name);
 
     }
-
-
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
         if (name != null && identification != null) {

@@ -13,7 +13,9 @@ public class Floor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String floorCode;
     private String name;
-    private double area;
-    private String floorStatus;
+    private Double area;
+    private Long capacity;
+    private String typeOfFloor;
 }

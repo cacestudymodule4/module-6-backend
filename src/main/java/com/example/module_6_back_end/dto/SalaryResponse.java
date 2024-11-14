@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalaryResponse {
+    private String codeStaff;
     private String name;
-    private String email;
+    private String position;
     private double salary;
 }

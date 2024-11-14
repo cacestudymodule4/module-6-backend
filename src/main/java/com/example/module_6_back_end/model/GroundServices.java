@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ground_id", "services_id"}))
-public class GroundService {
+public class GroundServices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

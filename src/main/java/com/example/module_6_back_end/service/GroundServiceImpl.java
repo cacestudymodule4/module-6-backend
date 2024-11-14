@@ -2,10 +2,10 @@ package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Ground;
+import com.example.module_6_back_end.model.GroundServices;
 import com.example.module_6_back_end.repository.GroundRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 
@@ -13,8 +13,6 @@ import java.util.List;
 public class GroundServiceImpl implements GroundService {
     @Autowired
     private GroundRepository groundRepository;
-
-
 
     @Override
     public List<Ground> getGrounds() {
@@ -39,5 +37,6 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public List<Ground> findByNameContaining(String name) {
         return groundRepository.findByNameContaining(name);
+
     }
 }

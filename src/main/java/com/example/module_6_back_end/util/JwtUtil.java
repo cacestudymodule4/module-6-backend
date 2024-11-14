@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final String SECRET_KEY = "vH8Dq3h3D3q8fhZgIDwPbN3E8QwE7nLyfG5HjI0Y7H4=";
-    private static final long EXPIRE_TIME = 86400000000L;
+    private static final long EXPIRE_TIME = 24 * 60 * 60;
 
     public String generateTokenLogin(Authentication authentication) {
         UserInfo userInfo = (UserInfo) authentication.getPrincipal();

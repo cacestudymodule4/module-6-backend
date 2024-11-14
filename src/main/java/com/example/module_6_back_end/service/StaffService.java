@@ -1,7 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 
 import java.util.List;
