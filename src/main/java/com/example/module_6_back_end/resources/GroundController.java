@@ -24,7 +24,6 @@ public class GroundController {
         return ResponseEntity.ok().body(service.getGrounds());
     }
 
-<<<<<<< HEAD
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listNotRented() {
         return ResponseEntity.ok().body(service.findByGroundCategory("chưa thuê"));
@@ -36,6 +35,4 @@ public class GroundController {
     ) {
         return ResponseEntity.ok().body(service.findByNameContaining(searchGround));
     }
-=======
->>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
 }
