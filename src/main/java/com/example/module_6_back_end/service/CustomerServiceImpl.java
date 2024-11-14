@@ -87,9 +87,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     public List<Customer> findCustomerByName(String name) {
         return customerRepository.findByNameContaining(name);
-    public List<Services> getServicesByCustomerId(Long customerId) {
-        return contractRepository.findServicesByCustomerId(customerId);
+
     }
+
 
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {

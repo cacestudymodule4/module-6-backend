@@ -6,6 +6,8 @@ import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,7 +20,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<Contract> getContracts() {
-        return contractRepository.findAllContractsOrderByIdDesc();
+        return contractRepository.findAll();
     }
 
     @Override
@@ -27,8 +29,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer) {
-        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer);
+    public Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer, Pageable pageable) {
+        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
     }
 
     @Override
@@ -118,24 +120,27 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> getActiveContracts() {
+    public Page<Contract> getActiveContracts(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(now,now);
+        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now,pageable);
     }
 
     @Override
-    public List<Contract> getExpiredContracts() {
+    public Page<Contract> getExpiredContracts(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByEndDateLessThan(now);
+        return contractRepository.findByEndDateLessThan(now,pageable);
     }
 
     @Override
-    public List<Contract> getNotYetContract() {
+    public Page<Contract> getNotYetContract(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateGreaterThan(now);
+        return contractRepository.findByStartDateGreaterThan(LocalDate.from(now.atStartOfDay()),pageable);
     }
 
-
+    @Override
+    public Page<Contract> getAllContracts(Pageable pageable) {
+        return contractRepository.findAllContractsOrderByIdDesc(pageable);
+    }
 }
 
 

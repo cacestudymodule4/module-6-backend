@@ -66,12 +66,6 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/{customerId}/services")
-    public ResponseEntity<List<Services>> getServicesByCustomerId(@PathVariable Long customerId) {
-        List<Services> services = customerService.getServicesByCustomerId(customerId);
-        return ResponseEntity.ok(services);
-    }
-
     @GetMapping("/search")
     public Page<Customer> searchCustomers(
             @RequestParam(required = false) String name,
@@ -80,11 +74,18 @@ public class CustomerController {
         return customerService.searchCustomers(name, identification, pageable);
     }
 
-    @GetMapping("/api/customer/findCus")
+    @GetMapping("/findCus")
     public ResponseEntity<List<Customer>> findCustomers(
             @RequestParam String searchCus
     ) {
         return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+    }
+
+    @GetMapping("/list-add")
+    public ResponseEntity<List<Customer>> listCustomersAdd() {
+        System.out.println(customerService.getCustomers().size());
+        return ResponseEntity.ok().body(customerService.getCustomers());
+
     }
 }
 

@@ -23,11 +23,8 @@ public interface CustomerService {
 
     Customer findCustomer(Long id);
 
-<<<<<<< HEAD
     List<Customer> findCustomerByName(String name);
-=======
-    List<Services> getServicesByCustomerId(Long customerId);
 
     Page<Customer> searchCustomers(String name, String identification, Pageable pageable);
->>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
+
 }

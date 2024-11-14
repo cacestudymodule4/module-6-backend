@@ -71,14 +71,6 @@ public class StaffController {
         return staffService.getStaffById(id);
     }
 
-<<<<<<< HEAD
-    @GetMapping("/findStaff")
-    public ResponseEntity<List<Staff>> findStaff(
-            @RequestParam String searchStaff
-    ) {
-        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
-
-=======
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> editStaff(@PathVariable Long id, @RequestBody Staff staff) {
         try {
@@ -91,6 +83,10 @@ public class StaffController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi cập nhật nhân viên");
         }
->>>>>>> 2cda348c8dac14c917502e8b9104706a4aa0677f
+    }
+
+    @GetMapping("/findStaff")
+    public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
+        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
     }
 }
