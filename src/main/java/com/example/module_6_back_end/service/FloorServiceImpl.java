@@ -12,7 +12,6 @@ public class FloorServiceImpl implements FloorService {
     @Autowired
     private FloorRepository floorRepository;
 
-
     @Override
     public Page<Floor> getAllFloors(Pageable pageable) {
         return floorRepository.findAll(pageable);
@@ -42,5 +41,4 @@ public class FloorServiceImpl implements FloorService {
     public Page<Floor> searchFloors(String name, Double area, String typeOfFloor, Pageable pageable) {
         return floorRepository.searchFloor(name, area, typeOfFloor, pageable);
     }
-
 }

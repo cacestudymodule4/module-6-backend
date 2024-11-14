@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class PageRequestDTO {
     private String q = "";
     private int page = 0;
-    private int size = 10;
+    private int size = 5;
     private String sort = "id";
     private String sortDir = "asc";
 }
