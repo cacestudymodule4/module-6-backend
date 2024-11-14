@@ -33,5 +33,4 @@ public class GroundController {
     ) {
         return ResponseEntity.ok().body(service.findByNameContaining(searchGround));
     }
-
 }
