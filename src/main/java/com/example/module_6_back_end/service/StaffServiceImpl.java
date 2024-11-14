@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,10 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Staff saveStaff(Staff staff) {
         return null;
+    }
+
+    @Override
+    public List<Staff> findByNameContaining(String name) {
+        return staffRepository.findByNameContaining(name);
     }
 }

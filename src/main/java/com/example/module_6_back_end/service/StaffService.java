@@ -21,4 +21,5 @@ public interface StaffService {
 
     Staff saveStaff(Staff staff);
 
+    List<Staff> findByNameContaining(String name);
 }

@@ -32,4 +32,10 @@ public interface ContractService {
     void deleteContracts(Staff staff);
 
     List<Contract> getContractsByStartDateAndEndDate(ReportRequest reportRequest);
+
+    List<Contract> getActiveContracts();
+
+    List<Contract> getExpiredContracts();
+
+    List<Contract> getNotYetContract();
 }

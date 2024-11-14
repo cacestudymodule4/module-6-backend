@@ -16,4 +16,6 @@ public interface CustomerService {
     Customer findByIdentification(String identification);
 
     Customer findCustomer(Long id);
+
+    List<Customer> findCustomerByName(String name);
 }

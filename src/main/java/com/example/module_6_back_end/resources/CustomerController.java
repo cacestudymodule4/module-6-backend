@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.resources;
 
+import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,4 +61,12 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> list() {
         return ResponseEntity.ok().body(customerService.getCustomers());
     }
+
+    @GetMapping("/api/customer/findCus")
+    public ResponseEntity<List<Customer>> findCustomers(
+            @RequestParam String searchCus
+    ) {
+        return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+    }
 }
+

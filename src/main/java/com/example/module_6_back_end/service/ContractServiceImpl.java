@@ -18,7 +18,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public List<Contract> getContracts() {
-        return contractRepository.findAll();
+        return contractRepository.findAllContractsOrderByIdDesc();
     }
 
     @Override
@@ -84,23 +84,23 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public String generateCode() {
-            String id;
-            boolean isUnique;
-            List<Contract> list = getContracts();
-            do {
-                long randomNum = (long) (Math.random() * 100000);
-                String randomNumStr = String.format("%05d", randomNum);
-                id = "MB" + randomNumStr;
-                isUnique = true;
-                for (Contract con : list) {
-                    if (con.getTaxCode().equals(id)) {
-                        isUnique = false;
-                        break;
-                    }
+        String id;
+        boolean isUnique;
+        List<Contract> list = getContracts();
+        do {
+            long randomNum = (long) (Math.random() * 100000);
+            String randomNumStr = String.format("%05d", randomNum);
+            id = "MB" + randomNumStr;
+            isUnique = true;
+            for (Contract con : list) {
+                if (con.getTaxCode().equals(id)) {
+                    isUnique = false;
+                    break;
                 }
-            } while (!isUnique);
-            return id;
-        }
+            }
+        } while (!isUnique);
+        return id;
+    }
 
     public List<Contract> getContractsByStartDateAndEndDate(ReportRequest reportRequest) {
         LocalDate startDate = reportRequest.getStartDate();
@@ -116,6 +116,26 @@ public class ContractServiceImpl implements ContractService {
         }
         return contractRepository.findByEndDate(endDate);
     }
+
+    @Override
+    public List<Contract> getActiveContracts() {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(now,now);
+    }
+
+    @Override
+    public List<Contract> getExpiredContracts() {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByEndDateLessThan(now);
+    }
+
+    @Override
+    public List<Contract> getNotYetContract() {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByStartDateGreaterThan(now);
+    }
+
+
 }
 
 

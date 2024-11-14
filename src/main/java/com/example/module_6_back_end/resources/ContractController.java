@@ -43,6 +43,9 @@ public class ContractController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         try {
+            Contract contract = contractService.getContractById(id);
+            contract.getGround().setGroundCategory("chưa thuê");
+            groundService.saveGround(contract.getGround());
             contractService.deleteContract(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -65,27 +68,15 @@ public class ContractController {
 
     @PostMapping("/add")
     public ResponseEntity<Void> add(
-            @RequestBody ContractDTO contractDto
+            @RequestBody Contract contract
     ) {
-        System.out.println(contractDto.getTerm());
-        Ground ground = groundService.getGround(contractDto.getGround());
-        Staff staff = staffService.getStaffById(contractDto.getStaffId());
-        ground.setGroundCategory("Đã thuê");
-        Customer customer = customerService.findByIdentification(contractDto.getCmd());
-        Contract contract = new Contract();
-        contract.setGround(ground);
-        contract.setStaff(staff);
-        contract.setCustomer(customer);
-        contract.setDescription(contractDto.getContent());
-        contract.setDeposit((long) contractDto.getDeposit());
-        contract.setTotalPrice((long) contractDto.getPrice() * contractDto.getTerm());
-        contract.setTerm(contractDto.getTerm());
-        contract.setStartDate(contractDto.getStartDay());
-        contract.setEndDate(contractDto.getEndDay());
-        String texCodeStr = contractService.generateUniqueTaxCode();
-        String codeStr = contractService.generateCode();
-        contract.setCode(codeStr);
-        contract.setTaxCode(texCodeStr);
+        String codeTax = contractService.generateUniqueTaxCode();
+        String codeContract = contractService.generateCode();
+        contract.setTaxCode(codeTax);
+        contract.setCode(codeContract);
+        contract.getGround().setGroundCategory("Đã thuê");
+        groundService.saveGround(contract.getGround());
+        System.out.println(contract.getGround().getGroundCategory());
         System.out.println(contract);
         contractService.saveContract(contract);
         return ResponseEntity.ok().build();
@@ -111,8 +102,25 @@ public class ContractController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<Contract>> filterContracts(
+            @RequestParam(required = false) String selectedFilter
+    ) {
+        if ("Có hiệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getActiveContracts());
+        } else if ("Hết hiệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getExpiredContracts());
+        } else if ("Chưa có hệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getNotYetContract());
+        } else {
+            return ResponseEntity.ok().body(contractService.getContracts());
+        }
+
+    }
+
     @GetMapping("/findContract")
     public ResponseEntity<Contract> findContract(@RequestParam long id) {
         return ResponseEntity.ok().body(contractService.getContractById(id));
     }
+
 }

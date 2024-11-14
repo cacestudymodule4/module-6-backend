@@ -52,4 +52,12 @@ public class StaffController {
     public Staff getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
     }
+
+    @GetMapping("/findStaff")
+    public ResponseEntity<List<Staff>> findStaff(
+            @RequestParam String searchStaff
+    ) {
+        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
+
+    }
 }

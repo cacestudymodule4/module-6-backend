@@ -71,4 +71,9 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findCustomer(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Customer> findCustomerByName(String name) {
+        return customerRepository.findByNameContaining(name);
+    }
 }

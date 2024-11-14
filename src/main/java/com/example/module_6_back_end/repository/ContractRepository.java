@@ -14,8 +14,8 @@ import java.util.List;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE "
-            + "(:startDate IS NULL OR c.startDate <= :startDate)"
-            + "AND (:endDate IS NULL OR c.endDate >= :endDate)"
+            + "(:startDate IS NULL OR c.startDate >= :startDate)"
+            + "AND (:endDate IS NULL OR c.endDate <= :endDate)"
             + "AND (:taxCode IS NULL OR c.code Like :taxCode)"
             + "AND (:nameCustomer IS NULL OR c.customer.name LIKE :nameCustomer)"
 
@@ -37,4 +37,14 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("SELECT c FROM Contract c WHERE c.endDate <= :endDate")
     List<Contract> findByEndDate(@Param("endDate") LocalDate endDate);
+
+    List<Contract> findByEndDateLessThan(LocalDate date);
+
+    List<Contract> findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate startDate, LocalDate endDate);
+
+    List<Contract> findByStartDateGreaterThan(LocalDate date);
+
+    @Query("SELECT c FROM Contract c ORDER BY c.id DESC")
+    List<Contract> findAllContractsOrderByIdDesc();
+
 }
