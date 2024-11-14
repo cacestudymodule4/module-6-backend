@@ -23,7 +23,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT s FROM Staff s WHERE s.name LIKE :searchTerm OR s.address LIKE :searchTerm OR s.phone LIKE :searchTerm OR s.email LIKE :searchTerm OR s.position LIKE :searchTerm")
+    @Query("SELECT s FROM Staff s WHERE s.codeStaff LIKE :searchTerm OR s.name LIKE :searchTerm OR s.address LIKE :searchTerm OR s.phone LIKE :searchTerm OR s.email LIKE :searchTerm OR s.position LIKE :searchTerm")
     Page<Staff> searchStaff(@Param("searchTerm") String searchTerm, Pageable pageable);
 
     boolean existsByCodeStaff(String codeStaff);

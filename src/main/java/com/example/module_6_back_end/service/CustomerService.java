@@ -4,7 +4,6 @@ import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

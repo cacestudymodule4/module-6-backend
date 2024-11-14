@@ -3,7 +3,9 @@ package com.example.module_6_back_end.resources;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.service.RegisterService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RegisterController {
