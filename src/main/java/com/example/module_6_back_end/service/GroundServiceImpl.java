@@ -37,6 +37,5 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public List<Ground> findByNameContaining(String name) {
         return groundRepository.findByNameContaining(name);
-
     }
 }
