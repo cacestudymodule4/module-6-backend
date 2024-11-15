@@ -84,4 +84,9 @@ public class StaffController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi cập nhật nhân viên");
         }
     }
+
+    @GetMapping("/findStaff")
+    public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
+        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
+    }
 }

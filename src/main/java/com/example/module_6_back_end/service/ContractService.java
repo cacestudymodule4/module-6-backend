@@ -4,6 +4,8 @@ import com.example.module_6_back_end.dto.ReportRequest;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,11 +17,13 @@ public interface ContractService {
 
     void saveContract(Contract contract);
 
-    List<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String name);
+    Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String name,Pageable pageable);
 
     void deleteContract(Long id);
 
     String generateUniqueTaxCode();
+
+    String generateCode();
 
     List<Contract> getContractsByCustomer(Customer customer);
 
@@ -30,4 +34,13 @@ public interface ContractService {
     void deleteContracts(Staff staff);
 
     List<Contract> getContractsByStartDateAndEndDate(ReportRequest reportRequest);
+
+    Page<Contract> getActiveContracts(Pageable pageable);
+
+    Page<Contract> getExpiredContracts(Pageable pageable);
+
+    Page<Contract> getNotYetContract(Pageable pageable);
+
+    Page<Contract> getAllContracts(Pageable pageable);
+
 }

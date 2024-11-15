@@ -6,6 +6,8 @@ import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,8 +29,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer) {
-        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer);
+    public Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer, Pageable pageable) {
+        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
     }
 
     @Override
@@ -83,6 +85,25 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public String generateCode() {
+        String id;
+        boolean isUnique;
+        List<Contract> list = getContracts();
+        do {
+            long randomNum = (long) (Math.random() * 100000);
+            String randomNumStr = String.format("%05d", randomNum);
+            id = "MB" + randomNumStr;
+            isUnique = true;
+            for (Contract con : list) {
+                if (con.getTaxCode().equals(id)) {
+                    isUnique = false;
+                    break;
+                }
+            }
+        } while (!isUnique);
+        return id;
+    }
+
     public List<Contract> getContractsByStartDateAndEndDate(ReportRequest reportRequest) {
         LocalDate startDate = reportRequest.getStartDate();
         LocalDate endDate = reportRequest.getEndDate();
@@ -96,6 +117,29 @@ public class ContractServiceImpl implements ContractService {
             return contractRepository.findByStartDate(startDate);
         }
         return contractRepository.findByEndDate(endDate);
+    }
+
+    @Override
+    public Page<Contract> getActiveContracts(Pageable pageable) {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now,pageable);
+    }
+
+    @Override
+    public Page<Contract> getExpiredContracts(Pageable pageable) {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByEndDateLessThan(now,pageable);
+    }
+
+    @Override
+    public Page<Contract> getNotYetContract(Pageable pageable) {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByStartDateGreaterThan(LocalDate.from(now.atStartOfDay()),pageable);
+    }
+
+    @Override
+    public Page<Contract> getAllContracts(Pageable pageable) {
+        return contractRepository.findAllContractsOrderByIdDesc(pageable);
     }
 }
 

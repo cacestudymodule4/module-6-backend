@@ -12,6 +12,9 @@ import com.example.module_6_back_end.service.StaffService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +46,9 @@ public class ContractController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         try {
+            Contract contract = contractService.getContractById(id);
+            contract.getGround().setGroundCategory("chưa thuê");
+            groundService.saveGround(contract.getGround());
             contractService.deleteContract(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
@@ -51,51 +57,48 @@ public class ContractController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Contract>> searchContracts(
+    public ResponseEntity<Page<Contract>> searchContracts(
             @RequestParam(required = false) String taxCode,
             @RequestParam(required = false) String nameCustomer,
             @RequestParam(required = false) String startDateStr,
-            @RequestParam(required = false) String endDateStr) {
-        LocalDate startDate = startDateStr.isEmpty() ? null : LocalDate.parse(startDateStr);
-        LocalDate endDate = endDateStr.isEmpty() ? null : LocalDate.parse(endDateStr);
-        System.out.println(nameCustomer);
-        List<Contract> contracts = contractService.searchContract(startDate, endDate,taxCode,nameCustomer);
+            @RequestParam(required = false) String endDateStr,
+            Pageable pageable) {  // Nhận đối tượng Pageable cho phân trang
+
+        // Chuyển đổi các tham số ngày tháng từ String sang LocalDate
+        LocalDate startDate = startDateStr != null && !startDateStr.isEmpty() ? LocalDate.parse(startDateStr) : null;
+        LocalDate endDate = endDateStr != null && !endDateStr.isEmpty() ? LocalDate.parse(endDateStr) : null;
+
+        // Gọi service để tìm kiếm hợp đồng
+        Page<Contract> contracts = contractService.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
+
+        // Trả về kết quả dưới dạng ResponseEntity
         return ResponseEntity.ok().body(contracts);
     }
 
     @PostMapping("/add")
     public ResponseEntity<Void> add(
-            @RequestBody ContractDTO contractDto
+            @RequestBody Contract contract
     ) {
-        System.out.println(contractDto.getTerm());
-        Ground ground = groundService.getGround(contractDto.getGround());
-        Staff staff = staffService.getStaffById(contractDto.getStaffId());
-        ground.setGroundCategory("Đã thuê");
-        Customer customer = customerService.findByIdentification(contractDto.getCmd());
-        Contract contract = new Contract();
-        contract.setGround(ground);
-        contract.setStaff(staff);
-        contract.setCustomer(customer);
-        contract.setDescription(contractDto.getContent());
-        contract.setDeposit((long) contractDto.getDeposit());
-        contract.setTotalPrice((long) contractDto.getPrice()*contractDto.getTerm());
-        contract.setTerm(contractDto.getTerm());
-        contract.setStartDate( contractDto.getStartDay());
-        contract.setEndDate(contractDto.getEndDay());
-       String texCodeStr = contractService.generateUniqueTaxCode();
-        contract.setTaxCode(texCodeStr);
+        String codeTax = contractService.generateUniqueTaxCode();
+        String codeContract = contractService.generateCode();
+        contract.setTaxCode(codeTax);
+        contract.setCode(codeContract);
+        contract.getGround().setGroundCategory("Đã thuê");
+        groundService.saveGround(contract.getGround());
+        System.out.println(contract.getGround().getGroundCategory());
         System.out.println(contract);
         contractService.saveContract(contract);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("/save")
     public ResponseEntity<Void> save(
             @RequestBody ContractDTO contractDto
-    ){
-        System.out.println( contractDto.getId());
+    ) {
+        System.out.println(contractDto.getId());
         Ground ground = groundService.getGround(contractDto.getGround());
         Staff staff = staffService.getStaffById(contractDto.getStaffId());
-        double totalPrice = ground.getPrice()*contractDto.getTerm();
+        double totalPrice = ground.getPrice() * contractDto.getTerm();
         Contract contract = contractService.getContractById(contractDto.getId());
         contract.setDescription(contractDto.getContent());
         contract.setStartDate(contractDto.getStartDay());
@@ -108,8 +111,33 @@ public class ContractController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<Page<Contract>> filterContracts(
+            @RequestParam(required = false) String selectedFilter,
+            Pageable pageable  // Spring sẽ tự động xử lý tham số phân trang từ query parameters
+    ) {
+        if ("Có hiệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getActiveContracts(pageable));
+        } else if ("Hết hiệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getExpiredContracts(pageable));
+        } else if ("Chưa có hiệu lực".equals(selectedFilter)) {
+            return ResponseEntity.ok().body(contractService.getNotYetContract(pageable));
+        } else {
+            return ResponseEntity.ok().body(contractService.getAllContracts(pageable));
+        }
+    }
+
     @GetMapping("/findContract")
     public ResponseEntity<Contract> findContract(@RequestParam long id) {
         return ResponseEntity.ok().body(contractService.getContractById(id));
     }
+
+    @GetMapping("/list-1")
+    public ResponseEntity<Page<Contract>> listContracts(
+            @RequestParam("page") int page, @RequestParam("size") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok().body(contractService.getAllContracts(pageable));
+    }
+
 }
