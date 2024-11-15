@@ -17,5 +17,4 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
     List<Ground> findByNameContaining(String name);
     @Query(value = "SELECT g.* FROM ground g JOIN ground_service gs ON g.id = gs.ground_id JOIN services s ON s.id = gs.services_id WHERE s.id = :serviceId", nativeQuery = true)
     List<Ground> findGroundsByServiceId(@Param("serviceId") Long serviceId);
-
 }
