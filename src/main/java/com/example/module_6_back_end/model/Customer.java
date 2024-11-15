@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Data
@@ -26,5 +25,4 @@ public class Customer {
     private String phone;
     private String email;
     private String company;
-
 }
