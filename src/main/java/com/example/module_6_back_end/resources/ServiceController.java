@@ -22,7 +22,18 @@ public class ServiceController {
         Pageable pageable = PageRequest.of(page, size);
         try {
             return ResponseEntity.ok().body(servicesService.getAllServices(pageable));
-        }catch (Exception e) {
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteService(@PathVariable Long id) {
+        try {
+            System.out.println(id);
+            servicesService.deleteServiceById(id);
+            return ResponseEntity.ok().body("Service deleted successfully.");
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

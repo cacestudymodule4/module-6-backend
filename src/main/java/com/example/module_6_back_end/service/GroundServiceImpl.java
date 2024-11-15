@@ -22,8 +22,4 @@ public class GroundServiceImpl implements GroundService {
     public Ground getGround(Long id) {
         return groundRepository.findById(id).orElse(null);
     }
-    public void deleteGroundByService(Long ServiceId){
-        List<Ground> groundServiceList = groundRepository.findGroundsByServiceId(ServiceId);
-        groundRepository.deleteAll();
-    }
 }
