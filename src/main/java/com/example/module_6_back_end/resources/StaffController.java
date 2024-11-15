@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -92,5 +94,10 @@ public class StaffController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi cập nhật nhân viên");
         }
+    }
+
+    @GetMapping("/findStaff")
+    public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
+        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
     }
 }

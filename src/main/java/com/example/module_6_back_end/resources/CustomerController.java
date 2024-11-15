@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.resources;
 
+import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.service.CustomerService;
@@ -65,17 +66,34 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/{customerId}/services")
-    public ResponseEntity<List<Services>> getServicesByCustomerId(@PathVariable Long customerId) {
-        List<Services> services = customerService.getServicesByCustomerId(customerId);
-        return ResponseEntity.ok(services);
-    }
-
     @GetMapping("/search")
-    public Page<Customer> searchCustomers(
+    public ResponseEntity<Page<Customer>> searchCustomers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String identification,
-            Pageable pageable) {
-        return customerService.searchCustomers(name, identification, pageable);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        try {
+            Page<Customer> result = customerService.searchCustomers(name, identification, pageable);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
+
+    @GetMapping("/findCus")
+    public ResponseEntity<List<Customer>> findCustomers(
+            @RequestParam String searchCus
+    ) {
+        return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+    }
+
+    @GetMapping("/list-add")
+    public ResponseEntity<List<Customer>> listCustomersAdd() {
+        System.out.println(customerService.getCustomers().size());
+        return ResponseEntity.ok().body(customerService.getCustomers());
+
+    }
+
 }
+

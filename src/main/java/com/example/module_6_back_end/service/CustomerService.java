@@ -22,7 +22,8 @@ public interface CustomerService {
 
     Customer findCustomer(Long id);
 
-    List<Services> getServicesByCustomerId(Long customerId);
+    List<Customer> findCustomerByName(String name);
 
     Page<Customer> searchCustomers(String name, String identification, Pageable pageable);
+
 }

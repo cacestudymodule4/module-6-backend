@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +85,10 @@ public class StaffServiceImpl implements StaffService {
 
     public boolean existsByCodeStaff(String codeStaff) {
         return staffRepository.existsByCodeStaff(codeStaff);
+    }
+
+    @Override
+    public List<Staff> findByNameContaining(String name) {
+        return staffRepository.findByNameContaining(name);
     }
 }
