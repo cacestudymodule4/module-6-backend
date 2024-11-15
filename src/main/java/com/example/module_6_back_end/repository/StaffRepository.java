@@ -17,9 +17,10 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             "AND (:name Is NULL OR s.name LIKE :name)" +
             "AND (:position IS NULL OR s.position LIKE :position)"
     )
-    List<Staff> findByCodeStaffOrNameOrPosition(@Param("codeStaff") String codeStaff,
+    Page<Staff> findByCodeStaffOrNameOrPosition(@Param("codeStaff") String codeStaff,
                                                 @Param("name") String name,
-                                                @Param("position") String position);
+                                                @Param("position") String position,
+                                                Pageable pageable);
 
     boolean existsByEmail(String email);
 

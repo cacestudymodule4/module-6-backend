@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -67,11 +65,14 @@ public class StaffController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Staff>> searchStaff(@RequestParam(required = false) String codeStaff,
+    public ResponseEntity<Page<Staff>> searchStaff(@RequestParam(required = false) String codeStaff,
                                                    @RequestParam(required = false) String name,
-                                                   @RequestParam(required = false) String position) {
-        List<Staff> staffList = staffService.searchStaff(codeStaff, name, position);
-        return ResponseEntity.ok().body(staffList);
+                                                   @RequestParam(required = false) String position,
+                                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                                   @RequestParam(value = "size", defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Staff> staffPage = staffService.searchStaff(codeStaff, name, position, pageable);
+        return ResponseEntity.ok(staffPage);
     }
 
     @GetMapping("/{id}")

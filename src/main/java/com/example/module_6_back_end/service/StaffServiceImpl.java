@@ -4,9 +4,9 @@ import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,8 +40,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> searchStaff(String codeStaff, String name, String position) {
-        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position);
+    public Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable) {
+        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position, pageable);
     }
 
     @Override
