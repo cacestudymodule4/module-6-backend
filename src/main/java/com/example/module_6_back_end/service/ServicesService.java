@@ -8,4 +8,8 @@ public interface ServicesService {
     Page<Services> getAllServices(Pageable pageable);
 
     void deleteServiceById(Long id);
+
+    Services updateService(Long id, Services updatedService);
+
+    Services addService(Services newService);
 }

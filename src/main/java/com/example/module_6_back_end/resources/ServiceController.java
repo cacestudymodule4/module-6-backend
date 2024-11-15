@@ -37,4 +37,27 @@ public class ServiceController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateService(@PathVariable Long id, @RequestBody Services updatedService) {
+        try {
+            Services service = servicesService.updateService(id, updatedService);
+            return ResponseEntity.ok(service);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
+        }
+    }
+    @PostMapping("/add")
+    public ResponseEntity<?> addService(@RequestBody Services newService) {
+        try {
+            Services savedService = servicesService.addService(newService);
+            return ResponseEntity.ok(savedService);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
+        }
+    }
+
 }
