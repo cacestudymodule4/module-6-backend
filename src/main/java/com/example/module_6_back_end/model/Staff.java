@@ -25,4 +25,5 @@ public class Staff {
     private double salary;
     private LocalDate startDate;
     private String position;
+    private String identification;
 }
