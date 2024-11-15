@@ -1,7 +1,11 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +22,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> getAllStaff() {
-        return staffRepository.findAll();
+    public Page<Staff> getAllStaff(PageRequest pageRequest) {
+        return staffRepository.findAll(pageRequest);
     }
 
     @Override
@@ -38,8 +42,8 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> searchStaff(String codeStaff, String name, String position) {
-        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position);
+    public Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable) {
+        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position, pageable);
     }
 
     @Override
@@ -81,5 +85,10 @@ public class StaffServiceImpl implements StaffService {
 
     public boolean existsByCodeStaff(String codeStaff) {
         return staffRepository.existsByCodeStaff(codeStaff);
+    }
+
+    @Override
+    public List<Staff> findByNameContaining(String name) {
+        return staffRepository.findByNameContaining(name);
     }
 }

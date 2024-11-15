@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.repository;
 
+import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,12 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             "AND (:name Is NULL OR s.name LIKE :name)" +
             "AND (:position IS NULL OR s.position LIKE :position)"
     )
-    List<Staff> findByCodeStaffOrNameOrPosition(@Param("codeStaff") String codeStaff,
+    Page<Staff> findByCodeStaffOrNameOrPosition(@Param("codeStaff") String codeStaff,
                                                 @Param("name") String name,
-                                                @Param("position") String position);
+                                                @Param("position") String position,
+                                                Pageable pageable);
+
+    List<Staff> findByNameContaining(String name);
 
     boolean existsByEmail(String email);
 

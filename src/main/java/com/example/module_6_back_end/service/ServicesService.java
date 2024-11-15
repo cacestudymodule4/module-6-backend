@@ -5,5 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ServicesService {
-    Page<Services> getAllServices (Pageable pageable);
+    Page<Services> getAllServices(Pageable pageable);
+
+    void deleteServiceById(Long id);
 }

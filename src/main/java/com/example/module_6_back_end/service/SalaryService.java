@@ -10,5 +10,4 @@ public interface SalaryService {
     Page<SalaryResponse> getSalary(PageRequestDTO pageRequest);
 
     List<SalaryResponse> getSalary();
-
 }

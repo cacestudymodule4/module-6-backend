@@ -6,6 +6,8 @@ import com.example.module_6_back_end.model.Services;
 
 import com.example.module_6_back_end.model.Staff;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,19 +19,17 @@ import java.util.List;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE "
-            + "(:startDate IS NULL OR c.startDate = :startDate)"
-            + "AND (:endDate IS NULL OR c.endDate = :endDate)"
-            + "AND (:taxCode IS NULL OR c.taxCode Like :taxCode)"
-            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE :nameCustomer)"
-
-    )
-    List<Contract> searchContract(@Param("startDate") LocalDate startDate,
+            + "(:startDate IS NULL OR c.startDate >= :startDate) "
+            + "AND (:endDate IS NULL OR c.endDate <= :endDate) "
+            + "AND (:taxCode IS NULL OR c.code LIKE :taxCode) "
+            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE :nameCustomer)")
+    Page<Contract> searchContract(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,
-                                  @Param("nameCustomer") String nameCustomer);
+                                  @Param("nameCustomer") String nameCustomer,
+                                  Pageable pageable);
 
     List<Contract> findByCustomer(Customer customer);
-
 
     @Query("SELECT s FROM Services s " +
             "JOIN Ground g ON g.id = s.id " +
@@ -47,5 +47,14 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("SELECT c FROM Contract c WHERE c.endDate <= :endDate")
     List<Contract> findByEndDate(@Param("endDate") LocalDate endDate);
+
+    Page<Contract> findByEndDateLessThan(LocalDate date, Pageable pageable);
+
+    Page<Contract> findByStartDateLessThanEqualAndEndDateGreaterThan(LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    Page<Contract> findByStartDateGreaterThan(LocalDate date,Pageable pageable);
+
+    @Query("SELECT c FROM Contract c ORDER BY c.id DESC")
+    Page<Contract> findAllContractsOrderByIdDesc(Pageable pageable);
 
 }

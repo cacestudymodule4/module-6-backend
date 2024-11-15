@@ -82,7 +82,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id).orElse(null);
     }
 
+    @Override
 
+    public List<Customer> findCustomerByName(String name) {
+        return customerRepository.findByNameContaining(name);
+
+    }
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
         if (name != null && identification != null) {
@@ -94,5 +99,6 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             return customerRepository.findAll(pageable);
         }
+
     }
 }
