@@ -18,4 +18,6 @@ public class Floor {
     private Double area;
     private Long capacity;
     private String typeOfFloor;
+    @ManyToOne
+    private Building building;
 }
