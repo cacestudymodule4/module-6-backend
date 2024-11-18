@@ -23,7 +23,7 @@ public class ServicesServiceImpl implements ServicesService {
     public Page<Services> getAllServices(Pageable pageable) {
         return serviceRepository.findAll(pageable);
     }
-    
+
     @Override
     public void deleteServiceById(Long id) {
         groundServicesService.deleteAllGroundId(id);
