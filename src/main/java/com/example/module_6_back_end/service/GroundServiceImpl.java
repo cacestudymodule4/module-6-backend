@@ -39,4 +39,9 @@ public class GroundServiceImpl implements GroundService {
         return groundRepository.findByNameContaining(name);
 
     }
+
+    @Override
+    public List<Ground> findGroundNotInContract() {
+        return groundRepository.findGroundsWithoutContract();
+    }
 }

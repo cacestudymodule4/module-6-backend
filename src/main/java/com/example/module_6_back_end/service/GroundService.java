@@ -16,4 +16,5 @@ public interface GroundService {
 
     List<Ground> findByNameContaining(String name);
 
+    List<Ground> findGroundNotInContract();
 }
