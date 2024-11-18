@@ -17,8 +17,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE "
             + "(:startDate IS NULL OR c.startDate >= :startDate) "
             + "AND (:endDate IS NULL OR c.endDate <= :endDate) "
-            + "AND (:taxCode IS NULL OR c.code LIKE :taxCode) "
-            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE :nameCustomer)")
+            + "AND (:taxCode IS NULL OR c.code LIKE CONCAT('%', :taxCode, '%')) "
+            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE CONCAT('%', :nameCustomer, '%'))")
     Page<Contract> searchContract(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,

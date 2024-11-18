@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,7 +71,7 @@ public class ContractController {
             @RequestParam(required = false) String nameCustomer,
             @RequestParam(required = false) String startDateStr,
             @RequestParam(required = false) String endDateStr,
-            Pageable pageable) {  // Nhận đối tượng Pageable cho phân trang
+            @PageableDefault(size = 1) Pageable pageable) {  // Nhận đối tượng Pageable cho phân trang
         LocalDate startDate = startDateStr != null && !startDateStr.isEmpty() ? LocalDate.parse(startDateStr) : null;
         LocalDate endDate = endDateStr != null && !endDateStr.isEmpty() ? LocalDate.parse(endDateStr) : null;
         Page<Contract> contracts = contractService.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
@@ -121,7 +122,7 @@ public class ContractController {
     @GetMapping("/filter")
     public ResponseEntity<Page<Contract>> filterContracts(
             @RequestParam(required = false) String selectedFilter,
-            Pageable pageable
+            @PageableDefault(size = 1) Pageable pageable
     ) {
         if ("Có hiệu lực".equals(selectedFilter)) {
             return ResponseEntity.ok().body(contractService.getActiveContracts(pageable));
@@ -140,10 +141,7 @@ public class ContractController {
     }
 
     @GetMapping("/list-page")
-    public ResponseEntity<Page<Contract>> listContracts(
-            @RequestParam("page") int page, @RequestParam("size") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
+    public ResponseEntity<Page<Contract>> listContracts(@PageableDefault(size = 1) Pageable pageable) {
         return ResponseEntity.ok().body(contractService.getAllContracts(pageable));
     }
 

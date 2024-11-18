@@ -33,10 +33,12 @@ public class StaffController {
         Page<Staff> staffPage = staffService.getAllStaff(pageRequest);
         return new ResponseEntity<>(staffPage, HttpStatus.OK);
     }
-@GetMapping("/list-add")
-public ResponseEntity<List<Staff>> getAllStaffList(){
-    return ResponseEntity.ok().body(staffService.getStaffList());
-}
+
+    @GetMapping("/list-add")
+    public ResponseEntity<List<Staff>> getAllStaffList() {
+        return ResponseEntity.ok().body(staffService.getStaffList());
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
         try {
