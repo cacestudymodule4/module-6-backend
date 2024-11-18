@@ -21,6 +21,4 @@ public class Services {
     private String name;
     private double price;
     private String unit;
-    private double consumption;
-    private LocalDate date;
 }
