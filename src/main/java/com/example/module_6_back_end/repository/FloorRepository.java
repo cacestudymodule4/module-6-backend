@@ -20,5 +20,6 @@ public interface FloorRepository extends JpaRepository<Floor, Long> {
                             Pageable pageable);
 
     boolean existsByFloorCode(String floorCode);
+
     Floor findByFloorCode(String floorCode);
 }
