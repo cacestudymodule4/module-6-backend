@@ -14,4 +14,6 @@ public interface GroundService {
     void saveGround(Ground ground);
 
     List<Ground> findByNameContaining(String name);
+
+    List<Ground> findGroundNotInContract();
 }

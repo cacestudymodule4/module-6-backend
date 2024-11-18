@@ -3,6 +3,7 @@ package com.example.module_6_back_end.service;
 import com.example.module_6_back_end.dto.ReportRequest;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,24 +123,30 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public Page<Contract> getActiveContracts(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now,pageable);
+        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now, pageable);
     }
 
     @Override
     public Page<Contract> getExpiredContracts(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByEndDateLessThan(now,pageable);
+        return contractRepository.findByEndDateLessThan(now, pageable);
     }
 
     @Override
     public Page<Contract> getNotYetContract(Pageable pageable) {
         LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateGreaterThan(LocalDate.from(now.atStartOfDay()),pageable);
+        return contractRepository.findByStartDateGreaterThan(now, pageable);
     }
 
     @Override
     public Page<Contract> getAllContracts(Pageable pageable) {
         return contractRepository.findAllContractsOrderByIdDesc(pageable);
+    }
+
+    @Override
+    public List<Ground> findAddGroundH(LocalDate oneMonthFromNow) {
+
+        return contractRepository.findGroundsWithContractsEndingInOneMonth(oneMonthFromNow);
     }
 }
 
