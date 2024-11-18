@@ -1,8 +1,6 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
-import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -90,10 +88,7 @@ public class CustomerController {
 
     @GetMapping("/list-add")
     public ResponseEntity<List<Customer>> listCustomersAdd() {
-        System.out.println(customerService.getCustomers().size());
         return ResponseEntity.ok().body(customerService.getCustomers());
-
     }
-
 }
 

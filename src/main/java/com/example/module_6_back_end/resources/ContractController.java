@@ -1,19 +1,13 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.dto.ContractDTO;
 import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Ground;
-import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.service.ContractService;
-import com.example.module_6_back_end.service.CustomerService;
 import com.example.module_6_back_end.service.GroundService;
-import com.example.module_6_back_end.service.StaffService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +21,12 @@ import java.util.*;
 public class ContractController {
     private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
-    private final StaffService staffService;
     private final GroundService groundService;
-    private final CustomerService customerService;
 
     @Autowired
-    public ContractController(ContractService contractService, StaffService staffService, GroundService groundService, CustomerService customerService) {
+    public ContractController(ContractService contractService, GroundService groundService) {
         this.contractService = contractService;
-        this.staffService = staffService;
         this.groundService = groundService;
-        this.customerService = customerService;
     }
 
     @GetMapping("/list")
@@ -122,7 +112,7 @@ public class ContractController {
     @GetMapping("/filter")
     public ResponseEntity<Page<Contract>> filterContracts(
             @RequestParam(required = false) String selectedFilter,
-            @PageableDefault(size = 1) Pageable pageable
+            @PageableDefault(size = 5) Pageable pageable
     ) {
         if ("Có hiệu lực".equals(selectedFilter)) {
             return ResponseEntity.ok().body(contractService.getActiveContracts(pageable));

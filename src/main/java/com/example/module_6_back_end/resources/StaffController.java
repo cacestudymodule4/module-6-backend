@@ -105,5 +105,4 @@ public class StaffController {
     public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
         return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
     }
-
 }
