@@ -43,7 +43,7 @@ public class ContractController {
         List<Contract> list = contractService.getContracts();
         LocalDate currentDay = LocalDate.now();
         for (Contract contract : list) {
-            if(contract.getEndDate().isBefore(currentDay)) {
+            if (contract.getEndDate().isBefore(currentDay)) {
                 contract.getGround().setGroundCategory("ok");
                 groundService.saveGround(contract.getGround());
             }
@@ -106,14 +106,14 @@ public class ContractController {
             @RequestBody Contract contract
     ) {
         System.out.println("đã vào đc");
-            Contract contractEdit = contractService.getContractById(contract.getId());
-            contractEdit.setStaff(contract.getStaff());
-            contractEdit.setCustomer(contract.getCustomer());
-            contractEdit.setTerm(contract.getTerm());
-            contractEdit.setStartDate(contract.getStartDate());
-            contractEdit.setEndDate(contract.getEndDate());
-            contractEdit.setDescription(contract.getDescription());
-            contractService.saveContract(contractEdit);
+        Contract contractEdit = contractService.getContractById(contract.getId());
+        contractEdit.setStaff(contract.getStaff());
+        contractEdit.setCustomer(contract.getCustomer());
+        contractEdit.setTerm(contract.getTerm());
+        contractEdit.setStartDate(contract.getStartDate());
+        contractEdit.setEndDate(contract.getEndDate());
+        contractEdit.setDescription(contract.getDescription());
+        contractService.saveContract(contractEdit);
         System.out.println(contract);
         return ResponseEntity.ok().build();
     }

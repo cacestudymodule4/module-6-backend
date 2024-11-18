@@ -14,10 +14,13 @@ import java.util.List;
 @Repository
 public interface GroundRepository extends JpaRepository<Ground, Long> {
     List<Ground> findByGroundCategory(String groundCategory);
+
     List<Ground> findByNameContaining(String name);
+
     @Query(value = "SELECT g.* FROM ground g JOIN ground_service gs ON g.id = gs.ground_id JOIN services s ON s.id = gs.services_id WHERE s.id = :serviceId", nativeQuery = true)
     List<Ground> findGroundsByServiceId(@Param("serviceId") Long serviceId);
 
     @Query("SELECT g FROM Ground g WHERE g NOT IN (SELECT c.ground FROM Contract c)")
     List<Ground> findGroundsWithoutContract();
 }
+

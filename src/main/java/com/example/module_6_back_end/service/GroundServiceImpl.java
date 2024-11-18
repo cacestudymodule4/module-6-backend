@@ -23,7 +23,7 @@ public class GroundServiceImpl implements GroundService {
     public Ground getGround(Long id) {
         return groundRepository.findById(id).orElse(null);
     }
-
+  
     @Override
     public List<Ground> findByGroundCategory(String groundCategory) {
         return groundRepository.findByGroundCategory(groundCategory);
@@ -37,7 +37,6 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public List<Ground> findByNameContaining(String name) {
         return groundRepository.findByNameContaining(name);
-
     }
 
     @Override
