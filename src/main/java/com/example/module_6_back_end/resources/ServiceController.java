@@ -1,6 +1,6 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.service.ServicesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/services")
@@ -37,6 +41,7 @@ public class ServiceController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateService(@PathVariable Long id, @RequestBody Services updatedService) {
         try {
@@ -44,10 +49,9 @@ public class ServiceController {
             return ResponseEntity.ok(service);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
         }
     }
+
     @PostMapping("/add")
     public ResponseEntity<?> addService(@RequestBody Services newService) {
         try {
@@ -60,4 +64,16 @@ public class ServiceController {
         }
     }
 
+    @GetMapping("/api/services/detail/{id}")
+    public ResponseEntity<?> getServiceDetail(@PathVariable Long id) {
+        Services services = servicesService.findById(id);
+        if (services == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dịch vụ không tồn tại");
+        }
+        List<Ground> grounds = servicesService.getGroundsByServiceName(services.getName());
+        Map<String, Object> response = new HashMap<>();
+        response.put("service", services);
+        response.put("grounds", grounds);
+        return ResponseEntity.ok(response);
+    }
 }

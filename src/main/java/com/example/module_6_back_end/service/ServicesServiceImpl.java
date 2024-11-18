@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,16 +37,37 @@ public class ServicesServiceImpl implements ServicesService {
         if (existingServiceOpt.isEmpty()) {
             throw new IllegalArgumentException("Dịch vụ không tồn tại với ID: " + id);
         }
-        Services existingServices = existingServiceOpt.get();
-        existingServices.setName(updatedService.getName());
-        existingServices.setPrice(updatedService.getPrice());
-        existingServices.setUnit(updatedService.getUnit());
-        return serviceRepository.save(existingServices);
+        boolean nameExists = serviceRepository.existsByName(updatedService.getName());
+        Services existingService = existingServiceOpt.get();
+        if (nameExists && !existingService.getName().equals(updatedService.getName())) {
+            throw new IllegalArgumentException("Tên dịch vụ đã tồn tại: " + updatedService.getName());
+        }
+        existingService.setName(updatedService.getName());
+        existingService.setPrice(updatedService.getPrice());
+        existingService.setUnit(updatedService.getUnit());
+
+        return serviceRepository.save(existingService);
     }
+
 
     @Override
     public Services addService(Services newService) {
+        if (serviceRepository.existsByName(newService.getName())) {
+            throw new IllegalArgumentException("Dịch vụ với tên này đã tồn tại.");
+        }
         return serviceRepository.save(newService);
     }
-
+    @Override
+    public List<Ground> getGroundsByServiceName(String serviceName) {
+        return serviceRepository.findGroundsByServiceName(serviceName);
+    }
+    @Override
+    public Services findById(Long id) {
+        Optional<Services> optionalService = serviceRepository.findById(id);
+        if (optionalService.isPresent()) {
+            return optionalService.get();
+        } else {
+            throw new RuntimeException("Dịch vụ không tồn tại với ID: " + id);
+        }
+    }
 }
