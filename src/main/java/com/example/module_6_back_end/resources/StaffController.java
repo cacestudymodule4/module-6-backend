@@ -34,6 +34,11 @@ public class StaffController {
         return new ResponseEntity<>(staffPage, HttpStatus.OK);
     }
 
+    @GetMapping("/list-add")
+    public ResponseEntity<List<Staff>> getAllStaffList() {
+        return ResponseEntity.ok().body(staffService.getStaffList());
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
         try {
@@ -100,4 +105,5 @@ public class StaffController {
     public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
         return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
     }
+
 }
