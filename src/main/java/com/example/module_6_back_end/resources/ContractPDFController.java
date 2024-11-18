@@ -18,6 +18,7 @@ public class ContractPDFController {
 
     @GetMapping("/contracts/{id}/pdf")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+        System.out.println("ok");
         byte[] pdfContent = contractPdfService.generatePdf(id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
