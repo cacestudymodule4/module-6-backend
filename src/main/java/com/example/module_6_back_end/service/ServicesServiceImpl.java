@@ -17,17 +17,16 @@ public class ServicesServiceImpl implements ServicesService {
     @Autowired
     private ServiceRepository serviceRepository;
     @Autowired
-    private GroundService groundService;
+    private GroundServicesService groundServicesService;
 
     @Override
     public Page<Services> getAllServices(Pageable pageable) {
         return serviceRepository.findAll(pageable);
     }
 
-    @Transactional
     @Override
     public void deleteServiceById(Long id) {
-        serviceRepository.deleteAllGroundIdByServiceId(id);
+        groundServicesService.deleteAllGroundId(id);
         serviceRepository.deleteById(id);
     }
 
@@ -57,10 +56,12 @@ public class ServicesServiceImpl implements ServicesService {
         }
         return serviceRepository.save(newService);
     }
+
     @Override
     public List<Ground> getGroundsByServiceName(String serviceName) {
         return serviceRepository.findGroundsByServiceName(serviceName);
     }
+
     @Override
     public Services findById(Long id) {
         Optional<Services> optionalService = serviceRepository.findById(id);

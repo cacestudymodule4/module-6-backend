@@ -64,7 +64,7 @@ public class ServiceController {
         }
     }
 
-    @GetMapping("/api/services/detail/{id}")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<?> getServiceDetail(@PathVariable Long id) {
         Services services = servicesService.findById(id);
         if (services == null) {
