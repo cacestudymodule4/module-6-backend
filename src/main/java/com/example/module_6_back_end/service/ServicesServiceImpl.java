@@ -1,15 +1,12 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.repository.ServiceRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +19,13 @@ public class ServicesServiceImpl implements ServicesService {
     @Override
     public Page<Services> getAllServices(Pageable pageable) {
         return serviceRepository.findAll(pageable);
+    }
+    @Override
+    public Page<Services> searchServices(String name, Pageable pageable) {
+        if (name == null || name.isBlank()) {
+            return serviceRepository.findAll(pageable); // Nếu không có từ khóa, trả về toàn bộ danh sách
+        }
+        return serviceRepository.findByNameContainingIgnoreCase(name, pageable);
     }
 
     @Override
@@ -57,10 +61,7 @@ public class ServicesServiceImpl implements ServicesService {
         return serviceRepository.save(newService);
     }
 
-    @Override
-    public List<Ground> getGroundsByServiceName(String serviceName) {
-        return serviceRepository.findGroundsByServiceName(serviceName);
-    }
+
 
     @Override
     public Services findById(Long id) {

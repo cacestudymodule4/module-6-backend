@@ -1,19 +1,11 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.dto.ContractDTO;
 import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Ground;
-import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.service.ContractService;
-import com.example.module_6_back_end.service.CustomerService;
 import com.example.module_6_back_end.service.GroundService;
-import com.example.module_6_back_end.service.StaffService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +17,11 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/contract")
 public class ContractController {
-    private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
     private final GroundService groundService;
 
     @Autowired
-    public ContractController(ContractService contractService, StaffService staffService, GroundService groundService, CustomerService customerService) {
+    public ContractController(ContractService contractService, GroundService groundService) {
         this.contractService = contractService;
         this.groundService = groundService;
     }
@@ -159,7 +150,6 @@ public class ContractController {
         List<Contract> list = contractService.getContracts();
         for (Contract contract : list) {
             if (contract.getGround().getName().equals(day) && contract.getGround().getGroundCategory().equals("not ok")) {
-                System.out.println(contract.getEndDate());
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }

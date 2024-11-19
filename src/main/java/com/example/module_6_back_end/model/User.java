@@ -1,29 +1,23 @@
 package com.example.module_6_back_end.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor
+public class User extends Person {
     @Column(unique = true)
     private String username;
     private String password;
-    @Column(unique = true)
-    private String email;
-    @Column(unique = true, nullable = false)
-    private String phone;
-    @Column(nullable = false)
-    private String fullName;
-    @Column(nullable = false)
-    private Boolean gender;
-    @Column(unique = true, nullable = false)
-    private String identification;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                "} " + super.toString();
+    }
 }

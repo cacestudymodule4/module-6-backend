@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserInfo implements UserDetails {
-    private final String email;
+    private final String username;
     private final String password;
     private final List<GrantedAuthority> authorities;
 
     public UserInfo(User User, List<Role> roles) {
-        email = User.getEmail();
+        username = User.getUsername();
         password = User.getPassword();
         authorities = new ArrayList<>();
         if (roles != null) {
@@ -39,7 +39,7 @@ public class UserInfo implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
