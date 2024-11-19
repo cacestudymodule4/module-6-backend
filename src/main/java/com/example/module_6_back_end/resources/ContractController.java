@@ -27,16 +27,12 @@ import java.util.*;
 public class ContractController {
     private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
-    private final StaffService staffService;
     private final GroundService groundService;
-    private final CustomerService customerService;
 
     @Autowired
     public ContractController(ContractService contractService, StaffService staffService, GroundService groundService, CustomerService customerService) {
         this.contractService = contractService;
-        this.staffService = staffService;
         this.groundService = groundService;
-        this.customerService = customerService;
     }
 
     @GetMapping("/list")
@@ -122,7 +118,7 @@ public class ContractController {
     @GetMapping("/filter")
     public ResponseEntity<Page<Contract>> filterContracts(
             @RequestParam(required = false) String selectedFilter,
-            @PageableDefault(size = 1) Pageable pageable
+            @PageableDefault(size = 5) Pageable pageable
     ) {
         if ("Có hiệu lực".equals(selectedFilter)) {
             return ResponseEntity.ok().body(contractService.getActiveContracts(pageable));
@@ -162,7 +158,8 @@ public class ContractController {
     ) {
         List<Contract> list = contractService.getContracts();
         for (Contract contract : list) {
-            if (contract.getGround().getName().equals(day)) {
+            if (contract.getGround().getName().equals(day) && contract.getGround().getGroundCategory().equals("not ok")) {
+                System.out.println(contract.getEndDate());
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
