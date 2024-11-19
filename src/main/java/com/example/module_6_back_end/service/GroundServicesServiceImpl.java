@@ -16,11 +16,13 @@ public class GroundServicesServiceImpl implements GroundServicesService {
     public List<Long> getGroundIdsByServiceId(Long serviceId) {
         return groundServicesRepository.findGroundIdsByServiceId(serviceId);
     }
+
     @Override
     public void deleteAllGroundId(Long serviceId) {
         List<Long> groundIds = getGroundIdsByServiceId(serviceId);
         groundServicesRepository.deleteAllById(groundIds);
     }
+
     @Override
     public List<GroundServices> getGroundServicesByServicesId(Long serviceId) {
         return groundServicesRepository.findByServicesId(serviceId);

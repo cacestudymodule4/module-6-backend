@@ -1,8 +1,6 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.model.Customer;
-import com.example.module_6_back_end.model.Services;
-import com.example.module_6_back_end.repository.ContractRepository;
 import com.example.module_6_back_end.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

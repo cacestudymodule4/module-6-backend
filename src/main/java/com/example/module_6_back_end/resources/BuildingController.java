@@ -1,7 +1,6 @@
 package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Building;
-import com.example.module_6_back_end.model.JwtResponse;
 import com.example.module_6_back_end.service.BuildingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
