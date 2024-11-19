@@ -44,4 +44,9 @@ public class RegisterService {
         role.setName("STAFF");
         roleRepository.save(role);
     }
+
+    public String getAccountStatus(String codeStaff) {
+        boolean hasAccount = userRepository.existsByCodeStaff(codeStaff);
+        return hasAccount ? "Đã có tài khoản" : "Chưa có tài khoản";
+    }
 }

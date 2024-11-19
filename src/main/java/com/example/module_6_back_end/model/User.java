@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends Person {
+public class User extends Staff {
     @Column(unique = true)
     private String username;
     private String password;
