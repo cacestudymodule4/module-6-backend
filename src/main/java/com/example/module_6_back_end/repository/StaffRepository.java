@@ -1,6 +1,5 @@
 package com.example.module_6_back_end.repository;
 
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

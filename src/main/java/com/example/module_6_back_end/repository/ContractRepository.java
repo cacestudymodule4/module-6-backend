@@ -1,10 +1,6 @@
 package com.example.module_6_back_end.repository;
 
-import com.example.module_6_back_end.model.Contract;
-import com.example.module_6_back_end.model.Customer;
-import com.example.module_6_back_end.model.Services;
-
-import com.example.module_6_back_end.model.Staff;
+import com.example.module_6_back_end.model.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +17,8 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE "
             + "(:startDate IS NULL OR c.startDate >= :startDate) "
             + "AND (:endDate IS NULL OR c.endDate <= :endDate) "
-            + "AND (:taxCode IS NULL OR c.code LIKE :taxCode) "
-            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE :nameCustomer)")
+            + "AND (:taxCode IS NULL OR c.code LIKE CONCAT('%', :taxCode, '%')) "
+            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE CONCAT('%', :nameCustomer, '%'))")
     Page<Contract> searchContract(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,
@@ -30,12 +26,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
                                   Pageable pageable);
 
     List<Contract> findByCustomer(Customer customer);
-
-    @Query("SELECT s FROM Services s " +
-            "JOIN Ground g ON g.id = s.id " +
-            "JOIN Contract c ON c.ground.id = g.id " +
-            "WHERE c.customer.id = :customerId")
-    List<Services> findServicesByCustomerId(@Param("customerId") Long customerId);
 
     List<Contract> findByStaff(Staff staff);
 
@@ -52,9 +42,11 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     Page<Contract> findByStartDateLessThanEqualAndEndDateGreaterThan(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
-    Page<Contract> findByStartDateGreaterThan(LocalDate date,Pageable pageable);
+    Page<Contract> findByStartDateGreaterThan(LocalDate date, Pageable pageable);
 
     @Query("SELECT c FROM Contract c ORDER BY c.id DESC")
     Page<Contract> findAllContractsOrderByIdDesc(Pageable pageable);
 
+    @Query("SELECT c.ground FROM Contract c WHERE c.endDate <= :oneMonthFromNow AND c.ground.groundCategory != 'not ok'")
+    List<Ground> findGroundsWithContractsEndingInOneMonth(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
 }

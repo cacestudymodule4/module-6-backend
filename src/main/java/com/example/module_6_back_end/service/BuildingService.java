@@ -18,7 +18,7 @@ public class BuildingService {
         return buildingRepository.findAll();
     }
 
-    public Building update(Building building) {
-        return buildingRepository.save(building);
+    public void update(Building building) {
+        buildingRepository.save(building);
     }
 }

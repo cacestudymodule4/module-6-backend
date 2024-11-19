@@ -1,51 +1,47 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.exception.ValidationException;
+import com.example.module_6_back_end.exception.UnauthorizedException;
 import com.example.module_6_back_end.model.Role;
+import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class RegisterService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
-    private RegisterService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    private RegisterService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserService userService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
-    public void registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Map<String, String> errors = new HashMap<>();
-
-        if (userRepository.existsByUsername(user.getUsername())) {
-            errors.put("username", "Tên người dùng đã tồn tại");
+    public void registerUser(Staff staff) {
+        User user = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(user);
+        boolean isAdmin = roles.stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
+        if (!isAdmin) {
+            throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            errors.put("email", "Email đã tồn tại");
-        }
-        if (userRepository.existsByPhone(user.getPhone())) {
-            errors.put("phone", "Số điện thoại đã tồn tại");
-        }
-        if (userRepository.existsByIdentification(user.getIdentification())) {
-            errors.put("identification", "CMND/CCCD đã tồn tại");
-        }
-        if (!errors.isEmpty()) {
-            throw new ValidationException(errors);
-        }
-        User newUser = userRepository.save(user);
+        User newUser = new User();
+        BeanUtils.copyProperties(staff, newUser);
+        newUser.setUsername(newUser.getEmail().toLowerCase());
+        newUser.setPassword(passwordEncoder.encode("123456789"));
+        newUser = userRepository.save(newUser);
         Role role = new Role();
         role.setUser(newUser);
-        role.setName("USER");
+        role.setName("STAFF");
         roleRepository.save(role);
     }
 }

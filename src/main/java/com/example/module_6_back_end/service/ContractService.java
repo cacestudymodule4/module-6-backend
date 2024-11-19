@@ -3,6 +3,7 @@ package com.example.module_6_back_end.service;
 import com.example.module_6_back_end.dto.ReportRequest;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Customer;
+import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Staff;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,4 +44,5 @@ public interface ContractService {
 
     Page<Contract> getAllContracts(Pageable pageable);
 
+    List<Ground> findAddGroundH( LocalDate oneMonthFromNow);
 }

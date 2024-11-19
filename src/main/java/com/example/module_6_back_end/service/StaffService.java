@@ -29,4 +29,6 @@ public interface StaffService {
     boolean existsByEmail(String email);
 
     boolean existsByPhone(String phone);
+
+    List<Staff> getStaffList();
 }

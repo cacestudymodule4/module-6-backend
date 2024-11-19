@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
-    private Long id;
-    private String email;
+    private String name;
     private String phone;
-    private String fullName;
-    private Boolean gender;
+    private String email;
     private String identification;
+    private Boolean gender;
+    private LocalDate birthday;
+    private String address;
 }
