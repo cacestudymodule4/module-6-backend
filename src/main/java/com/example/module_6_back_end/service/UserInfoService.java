@@ -23,8 +23,8 @@ public class UserInfoService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmailOrUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -32,7 +32,7 @@ public class UserInfoService implements UserDetailsService {
         return new UserInfo(user, roles);
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User getUserByEmailOrUsername(String username) {
+        return userRepository.findByEmailOrUsername(username);
     }
 }
