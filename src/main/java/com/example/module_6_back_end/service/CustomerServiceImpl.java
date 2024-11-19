@@ -47,6 +47,9 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerRepository.existsByIdentification(customer.getIdentification())) {
             throw new IllegalArgumentException("CMND bị trùng lặp");
         }
+        if (customerRepository.existsByPhone(customer.getPhone())) {
+            throw new IllegalArgumentException("Số điện thoại bị trùng lặp");
+        }
         return customerRepository.save(customer);
     }
 
@@ -61,6 +64,10 @@ public class CustomerServiceImpl implements CustomerService {
         if (!existingCustomer.getIdentification().equals(updatedCustomer.getIdentification()) &&
                 customerRepository.existsByIdentification(updatedCustomer.getIdentification())) {
             throw new IllegalArgumentException("Chứng minh nhân dân bị trùng lặp");
+        }
+        if (!existingCustomer.getPhone().equals(updatedCustomer.getPhone()) &&
+                customerRepository.existsByPhone(updatedCustomer.getPhone())) {
+            throw new IllegalArgumentException("Số điện thoại bị trùng lặp");
         }
         existingCustomer.setName(updatedCustomer.getName());
         existingCustomer.setBirthday(updatedCustomer.getBirthday());
@@ -88,6 +95,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findByNameContaining(name);
 
     }
+
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
         if (name != null && identification != null) {

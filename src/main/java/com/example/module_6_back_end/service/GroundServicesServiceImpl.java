@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GroundServiceServiceImpl implements GroundServicesService {
+public class GroundServicesServiceImpl implements GroundServicesService {
     @Autowired
     private GroundServicesRepository groundServicesRepository;
 
