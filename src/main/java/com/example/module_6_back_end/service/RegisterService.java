@@ -2,11 +2,9 @@ package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.exception.UnauthorizedException;
 import com.example.module_6_back_end.model.Role;
-import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,21 +24,19 @@ public class RegisterService {
         this.userService = userService;
     }
 
-    public void registerUser(Staff staff) {
-        User user = userService.getCurrentUser();
-        List<Role> roles = roleRepository.findByUser(user);
+    public void registerUser(User user) {
+        User auTh = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(auTh);
         boolean isAdmin = roles.stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
         if (!isAdmin) {
             throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
         }
-        User newUser = new User();
-        BeanUtils.copyProperties(staff, newUser);
-        newUser.setUsername(newUser.getEmail().toLowerCase());
-        newUser.setPassword(passwordEncoder.encode("123456789"));
-        newUser = userRepository.save(newUser);
+        user.setUsername(user.getEmail().toLowerCase());
+        user.setPassword(passwordEncoder.encode("123456789"));
+        user = userRepository.save(user);
         Role role = new Role();
-        role.setUser(newUser);
+        role.setUser(user);
         role.setName("STAFF");
         roleRepository.save(role);
     }
