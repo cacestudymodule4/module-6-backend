@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.resources;
 
+import com.example.module_6_back_end.dto.UserRequest;
 import com.example.module_6_back_end.model.JwtResponse;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.service.UserInfoService;
@@ -26,14 +27,14 @@ public class LoginController {
     }
 
     @PostMapping("/api/login")
-    public ResponseEntity<JwtResponse> login(@RequestBody User user) {
-        System.out.println(user);
+    public ResponseEntity<JwtResponse> login(@RequestBody UserRequest userRequest) {
+        System.out.println(userRequest);
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+                new UsernamePasswordAuthenticationToken(userRequest.getUsername(), userRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User userInfo = userInfoService.findByEmail(user.getEmail());
+        User userInfo = userInfoService.getUserByEmailOrUsername(userRequest.getUsername());
         return ResponseEntity.ok(new JwtResponse(jwt, userInfo.getEmail(), userDetails.getAuthorities()));
     }
 }

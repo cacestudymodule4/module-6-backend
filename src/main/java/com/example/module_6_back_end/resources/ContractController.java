@@ -4,8 +4,6 @@ import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.service.ContractService;
 import com.example.module_6_back_end.service.GroundService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +17,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/contract")
 public class ContractController {
-    private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
     private final GroundService groundService;
 
@@ -152,7 +149,7 @@ public class ContractController {
     ) {
         List<Contract> list = contractService.getContracts();
         for (Contract contract : list) {
-            if (contract.getGround().getName().equals(day)) {
+            if (contract.getGround().getName().equals(day) && contract.getGround().getGroundCategory().equals("not ok")) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
