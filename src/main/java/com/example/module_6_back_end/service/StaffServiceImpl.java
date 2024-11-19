@@ -1,6 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
@@ -55,7 +54,7 @@ public class StaffServiceImpl implements StaffService {
             staffToUpdate.setEmail(staff.getEmail());
             staffToUpdate.setPhone(staff.getPhone());
             staffToUpdate.setAddress(staff.getAddress());
-            staffToUpdate.setBirthDate(staff.getBirthDate());
+            staffToUpdate.setBirthday(staff.getBirthday());
             staffToUpdate.setSalary(staff.getSalary());
             staffToUpdate.setStartDate(staff.getStartDate());
             staffToUpdate.setPosition(staff.getPosition());

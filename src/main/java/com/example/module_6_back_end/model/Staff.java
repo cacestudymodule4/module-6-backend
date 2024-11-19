@@ -1,29 +1,28 @@
 package com.example.module_6_back_end.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class Staff {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor
+public class Staff extends Person {
     private String codeStaff;
-    private String name;
-    private LocalDate birthDate;
-    private boolean gender;
-    private String address;
-    private String phone;
-    private String email;
     private double salary;
     private LocalDate startDate;
     private String position;
-    private String identification;
+
+    @Override
+    public String toString() {
+        return "Staff{" +
+                "codeStaff='" + codeStaff + '\'' +
+                ", salary=" + salary +
+                ", startDate=" + startDate +
+                ", position='" + position + '\'' +
+                "} " + super.toString();
+    }
 }

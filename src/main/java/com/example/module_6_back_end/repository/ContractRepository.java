@@ -27,12 +27,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     List<Contract> findByCustomer(Customer customer);
 
-    @Query("SELECT s FROM Services s " +
-            "JOIN Ground g ON g.id = s.id " +
-            "JOIN Contract c ON c.ground.id = g.id " +
-            "WHERE c.customer.id = :customerId")
-    List<Services> findServicesByCustomerId(@Param("customerId") Long customerId);
-
     List<Contract> findByStaff(Staff staff);
 
     @Query("SELECT c FROM Contract c WHERE c.startDate >= :startDate AND c.endDate <= :endDate")
