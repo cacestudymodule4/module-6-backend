@@ -68,8 +68,8 @@ public class CustomerController {
     public ResponseEntity<Page<Customer>> searchCustomers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String identification,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         try {
             Page<Customer> result = customerService.searchCustomers(name, identification, pageable);
