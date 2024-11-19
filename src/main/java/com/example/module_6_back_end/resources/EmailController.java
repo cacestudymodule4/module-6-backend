@@ -3,7 +3,7 @@ package com.example.module_6_back_end.resources;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.service.EmailService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +15,7 @@ public class EmailController {
         this.emailService = emailService;
     }
 
-    @GetMapping("/send-mail")
+    @PostMapping("/send-mail")
     public ResponseEntity<?> sendMail(@RequestBody Contract contract) {
         try {
             emailService.sendMail(contract);
