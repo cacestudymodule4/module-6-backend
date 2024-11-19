@@ -16,7 +16,6 @@ public interface ServicesService {
 
     Services addService(Services newService);
 
-    List<Ground> getGroundsByServiceName(String serviceName);
-
     Services findById(Long id);
+    Page<Services> searchServices(String name, Pageable pageable);
 }
