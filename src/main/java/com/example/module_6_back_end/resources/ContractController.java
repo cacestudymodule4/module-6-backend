@@ -30,7 +30,7 @@ public class ContractController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Contract>> list() throws Exception {
+    public ResponseEntity<List<Contract>> list() {
         List<Contract> list = contractService.getContracts();
         LocalDate currentDay = LocalDate.now();
         for (Contract contract : list) {
@@ -43,7 +43,7 @@ public class ContractController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) throws Exception {
+    public ResponseEntity<Void> delete(@PathVariable long id) {
         Contract contract = contractService.getContractById(id);
         contract.getGround().setGroundCategory("ok");
         groundService.saveGround(contract.getGround());
