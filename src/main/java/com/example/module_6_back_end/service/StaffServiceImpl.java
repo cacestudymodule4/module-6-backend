@@ -14,10 +14,12 @@ import java.util.Optional;
 public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
     private final ContractService contractService;
+    private final RegisterService registerService;
 
-    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService) {
         this.staffRepository = staffRepository;
         this.contractService = contractService;
+        this.registerService = registerService;
     }
 
     @Override
@@ -71,7 +73,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        return staffRepository.save(staff);
+        Staff newStaff = staffRepository.save(staff);
+        registerService.registerUser(newStaff);
+        return newStaff;
     }
 
     public boolean existsByEmail(String email) {
