@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
 public class RegisterController {
     private final RegisterService registerService;
 
@@ -14,13 +13,9 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-<<<<<<< HEAD
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody Staff staff) {
-=======
     @PostMapping("api/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
->>>>>>> 22244462b83c4e2eaf1e00e73c8dbe0198b51943
+//        System.out.println(user);
         try {
             registerService.registerUser(user);
             return ResponseEntity.ok().build();

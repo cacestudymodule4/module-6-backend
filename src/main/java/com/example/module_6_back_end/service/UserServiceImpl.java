@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        String email = authentication.getName();
-        return userRepository.findByEmail(email);
+        String username = authentication.getName();
+        return userRepository.findByEmailOrUsernameOrPhone(username);
     }
 }
