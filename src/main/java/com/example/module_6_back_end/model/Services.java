@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,6 +19,4 @@ public class Services {
     private String name;
     private double price;
     private String unit;
-    private double consumption;
-    private LocalDate date;
 }

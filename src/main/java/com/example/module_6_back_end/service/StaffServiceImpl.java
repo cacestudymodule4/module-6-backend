@@ -1,6 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Customer;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
@@ -15,10 +14,12 @@ import java.util.Optional;
 public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
     private final ContractService contractService;
+    private final RegisterService registerService;
 
-    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService) {
         this.staffRepository = staffRepository;
         this.contractService = contractService;
+        this.registerService = registerService;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class StaffServiceImpl implements StaffService {
             staffToUpdate.setEmail(staff.getEmail());
             staffToUpdate.setPhone(staff.getPhone());
             staffToUpdate.setAddress(staff.getAddress());
-            staffToUpdate.setBirthDate(staff.getBirthDate());
+            staffToUpdate.setBirthday(staff.getBirthday());
             staffToUpdate.setSalary(staff.getSalary());
             staffToUpdate.setStartDate(staff.getStartDate());
             staffToUpdate.setPosition(staff.getPosition());
@@ -72,7 +73,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        return staffRepository.save(staff);
+        Staff newStaff = staffRepository.save(staff);
+        registerService.registerUser(newStaff);
+        return newStaff;
     }
 
     public boolean existsByEmail(String email) {

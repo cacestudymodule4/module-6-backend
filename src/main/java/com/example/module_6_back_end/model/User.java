@@ -1,14 +1,12 @@
 package com.example.module_6_back_end.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,14 +14,6 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
-    @Column(unique = true)
-    private String email;
-    @Column(unique = true, nullable = false)
-    private String phone;
-    @Column(nullable = false)
-    private String fullName;
-    @Column(nullable = false)
-    private Boolean gender;
-    @Column(unique = true, nullable = false)
-    private String identification;
+    @ManyToOne
+    private Staff staff;
 }

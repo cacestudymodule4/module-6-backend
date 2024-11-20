@@ -10,4 +10,6 @@ import java.util.List;
 public interface GroundServicesRepository extends JpaRepository<GroundServices, Long> {
     @Query("SELECT gs.ground.id FROM GroundServices gs WHERE gs.services.id = :serviceId")
     List<Long> findGroundIdsByServiceId(@Param("serviceId") Long serviceId);
+
+    List<GroundServices> findByServicesId(Long serviceId);
 }

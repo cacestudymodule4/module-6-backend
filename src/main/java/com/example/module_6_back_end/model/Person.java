@@ -7,19 +7,21 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"ground_id", "services_id"}))
-public class GroundServices {
+public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate startDate;
-    private double consumption;
-    @ManyToOne
-    private Ground ground;
-    @ManyToOne
-    private Services services;
+    private String name;
+    private String phone;
+    private String email;
+    private String identification;
+    private Boolean gender;
+    private LocalDate birthday;
+    private String address;
 }
+
