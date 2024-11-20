@@ -30,7 +30,7 @@ public class ContractController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Contract>> list() {
+    public ResponseEntity<List<Contract>> list() throws Exception {
         List<Contract> list = contractService.getContracts();
         LocalDate currentDay = LocalDate.now();
         for (Contract contract : list) {
@@ -43,7 +43,7 @@ public class ContractController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id) {
+    public ResponseEntity<Void> delete(@PathVariable long id) throws Exception {
         Contract contract = contractService.getContractById(id);
         contract.getGround().setGroundCategory("ok");
         groundService.saveGround(contract.getGround());
@@ -71,11 +71,11 @@ public class ContractController {
     @PostMapping("/add")
     public ResponseEntity<Void> add(
             @RequestBody Contract contract
-    ) {
+    ) throws Exception {
         List<Contract> list = contractService.getContracts();
         boolean contractExists = false;
         for (Contract existingContract : list) {
-            if (existingContract.getGround().getName().equals(contract.getGround().getName())) {
+            if (existingContract.getGround().getGroundCode().equals(contract.getGround().getGroundCode())) {
                 contractExists = true;
                 break;
             }
@@ -152,7 +152,7 @@ public class ContractController {
     ) {
         List<Contract> list = contractService.getContracts();
         for (Contract contract : list) {
-            if (contract.getGround().getName().equals(day)) {
+            if (contract.getGround().getGroundCode().equals(day)) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
