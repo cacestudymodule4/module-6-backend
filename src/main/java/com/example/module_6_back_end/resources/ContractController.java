@@ -4,6 +4,8 @@ import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.service.ContractService;
 import com.example.module_6_back_end.service.GroundService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/contract")
 public class ContractController {
+    private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
     private final GroundService groundService;
 
@@ -68,11 +71,11 @@ public class ContractController {
     @PostMapping("/add")
     public ResponseEntity<Void> add(
             @RequestBody Contract contract
-    ) {
+    ) throws Exception {
         List<Contract> list = contractService.getContracts();
         boolean contractExists = false;
         for (Contract existingContract : list) {
-            if (existingContract.getGround().getName().equals(contract.getGround().getName())) {
+            if (existingContract.getGround().getGroundCode().equals(contract.getGround().getGroundCode())) {
                 contractExists = true;
                 break;
             }
@@ -149,7 +152,7 @@ public class ContractController {
     ) {
         List<Contract> list = contractService.getContracts();
         for (Contract contract : list) {
-            if (contract.getGround().getName().equals(day) && contract.getGround().getGroundCategory().equals("not ok")) {
+            if (contract.getGround().getGroundCode().equals(day)) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
