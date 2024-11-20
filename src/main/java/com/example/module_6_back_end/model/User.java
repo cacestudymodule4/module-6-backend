@@ -12,6 +12,8 @@ public class User extends Person {
     @Column(unique = true)
     private String username;
     private String password;
+    @ManyToOne
+    private Staff staff;
 
     @Override
     public String toString() {
