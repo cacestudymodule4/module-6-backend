@@ -6,7 +6,6 @@ import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,6 @@ public class RegisterService {
             throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
         }
         User newUser = new User();
-        BeanUtils.copyProperties(staff, newUser);
         newUser.setUsername(staff.getEmail().toLowerCase());
         newUser.setPassword(passwordEncoder.encode("123456789"));
         newUser.setStaff(staff);
