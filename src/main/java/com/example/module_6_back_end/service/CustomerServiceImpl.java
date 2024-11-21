@@ -98,6 +98,5 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             return customerRepository.findAll(pageable);
         }
-
     }
 }

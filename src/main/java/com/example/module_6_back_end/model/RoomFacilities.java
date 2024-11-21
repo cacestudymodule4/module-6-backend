@@ -15,8 +15,11 @@ public class RoomFacilities {
     private Long id;
     @ManyToOne
     private Ground ground;
+    private int damaged ;
+    private String name;
     private int quantity;
     private String description;
     @ManyToOne
     private FacilitiesType facilitiesType;
+
 }
