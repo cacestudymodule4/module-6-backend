@@ -36,6 +36,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void saveContract(Contract contract) {
+
         contractRepository.save(contract);
     }
 

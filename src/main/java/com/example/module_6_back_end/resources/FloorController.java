@@ -2,6 +2,8 @@ package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Floor;
 import com.example.module_6_back_end.service.FloorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/floor")
 public class FloorController {
+    private static final Logger log = LoggerFactory.getLogger(FloorController.class);
     @Autowired
     private FloorService floorService;
 
@@ -75,5 +78,12 @@ public class FloorController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(floors, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-list")
+    public ResponseEntity<List<Floor>> getListSearch(){
+        List<Floor> floors = floorService.getFloors();
+        System.out.println(floors);
+        return ResponseEntity.ok().body(floors);
     }
 }

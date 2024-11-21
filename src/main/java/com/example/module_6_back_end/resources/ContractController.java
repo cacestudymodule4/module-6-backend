@@ -72,7 +72,6 @@ public class ContractController {
     public ResponseEntity<Void> add(
             @RequestBody Contract contract
     ) throws Exception {
-        List<Contract> list = contractService.getContracts();
         contract.getGround().setStatus(true);
         groundService.setGround(contract.getGround());
         String codeTax = contractService.generateUniqueTaxCode();
