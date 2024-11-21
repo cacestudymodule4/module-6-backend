@@ -91,7 +91,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> findByNameContaining(String name) {
+    public List<Staff> getStaffByNameContaining(String name) {
         return staffRepository.findByNameContaining(name);
     }
 

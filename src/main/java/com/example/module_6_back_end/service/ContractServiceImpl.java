@@ -144,7 +144,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Ground> findAddGroundH(LocalDate oneMonthFromNow) {
+    public List<Ground> getAddGroundH(LocalDate oneMonthFromNow) {
         return contractRepository.findGroundsWithContractsEndingInOneMonth(oneMonthFromNow);
     }
 }

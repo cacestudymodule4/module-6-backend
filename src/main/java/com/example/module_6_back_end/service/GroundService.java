@@ -24,4 +24,6 @@ public interface GroundService {
     void saveGround(Ground ground) throws Exception;
 
     Page<Ground> searchGrounds(String groundCode, Double area, Double price, Pageable pageable);
+
+    void setGround(Ground ground);
 }
