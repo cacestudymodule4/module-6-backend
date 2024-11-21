@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.repository;
 
 import com.example.module_6_back_end.model.Floor;
+import com.example.module_6_back_end.model.Ground;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,6 @@ public interface FloorRepository extends JpaRepository<Floor, Long> {
     boolean existsByFloorCode(String floorCode);
 
     Floor findByFloorCode(String floorCode);
+
+    Page<Floor> findAllByDeletedFalse(Pageable pageable);
 }

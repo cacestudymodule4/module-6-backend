@@ -26,4 +26,8 @@ public interface GroundService {
     Page<Ground> searchGrounds(String groundCode, Double area, Double price, Pageable pageable);
 
     void setGround(Ground ground);
+
+    Page<Ground> findAllByDeletedFalse(Pageable pageable);
+
+    Ground findGroundById(Long id);
 }

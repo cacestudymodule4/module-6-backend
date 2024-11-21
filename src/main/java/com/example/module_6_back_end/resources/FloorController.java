@@ -23,7 +23,7 @@ public class FloorController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getListFloor(@PageableDefault(size = 5) Pageable pageable) {
-        Page<Floor> floors = floorService.getAllFloors(pageable);
+        Page<Floor> floors = floorService.findAllByDeletedFalse(pageable);
         if (floors.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -33,7 +33,9 @@ public class FloorController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteFloor(@PathVariable Long id) {
         try {
-            floorService.deleteFloor(id);
+            Floor floor = floorService.findFloorById(id);
+            floor.setDeleted(true);
+            floorService.saveFloor(floor);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
