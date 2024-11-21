@@ -6,7 +6,6 @@ import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +26,17 @@ public class RegisterService {
     }
 
     public void registerUser(Staff staff) {
-        User user = userService.getCurrentUser();
-        List<Role> roles = roleRepository.findByUser(user);
+        User auTh = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(auTh);
         boolean isAdmin = roles.stream()
                 .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
         if (!isAdmin) {
             throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
         }
         User newUser = new User();
-        BeanUtils.copyProperties(staff, newUser);
-        newUser.setUsername(newUser.getEmail().toLowerCase());
+        newUser.setUsername(staff.getEmail().toLowerCase());
         newUser.setPassword(passwordEncoder.encode("123456789"));
+        newUser.setStaff(staff);
         newUser = userRepository.save(newUser);
         Role role = new Role();
         role.setUser(newUser);

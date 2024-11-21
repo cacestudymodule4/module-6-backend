@@ -74,9 +74,9 @@ public class GroundServicesServiceImpl implements GroundServicesService {
         GroundServices groundServices = groundServicesRepository.findByServicesAndGround(services, ground)
                 .orElseThrow(() -> new IllegalArgumentException("Mặt bằng không tồn tại trong dịch vụ này"));
         String groundName = groundRepository.findById(groundId)
-                .map(Ground::getName)
+                .map(Ground::getGroundCode)
                 .orElse("Tên mặt bằng không tồn tại");
-        groundServices.getGround().setName(groundName);
+        groundServices.getGround().setGroundCode(groundName);
         return groundServices;
     }
 

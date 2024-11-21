@@ -24,7 +24,7 @@ public class UserInfoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailOrUsername(username);
+        User user = userRepository.findByEmailOrUsernameOrPhone(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -32,7 +32,7 @@ public class UserInfoService implements UserDetailsService {
         return new UserInfo(user, roles);
     }
 
-    public User getUserByEmailOrUsername(String username) {
-        return userRepository.findByEmailOrUsername(username);
+    public User getUserByEmailOrUsernameOrPhone(String username) {
+        return userRepository.findByEmailOrUsernameOrPhone(username);
     }
 }
