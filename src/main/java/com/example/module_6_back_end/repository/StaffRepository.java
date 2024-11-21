@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Long> {
@@ -33,6 +32,4 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     boolean existsByCodeStaff(String codeStaff);
 
     boolean existsByPhone(String phone);
-
-    Optional<Staff> findByEmail(String email);
 }
