@@ -17,12 +17,9 @@ public interface CustomerService {
 
     Customer updateCustomer(Long id, Customer updatedCustomer);
 
-    Customer findByIdentification(String identification);
-
-    Customer findCustomer(Long id);
+    Customer getCustomer(Long id);
 
     List<Customer> getCustomerByName(String name);
 
     Page<Customer> searchCustomers(String name, String identification, Pageable pageable);
-
 }

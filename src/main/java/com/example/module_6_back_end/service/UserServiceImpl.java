@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.dto.ChangePasswordRequest;
+import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -39,5 +40,15 @@ public class UserServiceImpl implements UserService {
         }
         String username = authentication.getName();
         return userRepository.findByEmailOrUsernameOrPhone(username);
+    }
+
+    @Override
+    public User getUserByStaff(Staff staff) {
+        return userRepository.findByStaff(staff);
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 }
