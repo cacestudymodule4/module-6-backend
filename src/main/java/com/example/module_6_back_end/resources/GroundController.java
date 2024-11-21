@@ -1,6 +1,5 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.model.Floor;
 import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.service.GroundService;
 import org.springframework.data.domain.Page;
@@ -84,5 +83,10 @@ public class GroundController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/find-gr/{id}")
+    public ResponseEntity<?> getGround(@PathVariable Long id) {
+        return ResponseEntity.ok().body(groundService.getGround(id));
     }
 }
