@@ -21,11 +21,11 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/list")
-    public ResponseEntity<Page<Customer>> getAllCustomers( @RequestParam("page") int page,@RequestParam("size") int size) {
+    public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam("page") int page, @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         try {
             return ResponseEntity.ok().body(customerService.getAllCustomers(pageable));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -42,6 +42,7 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addCustomer(@RequestBody Customer customer) {
+        System.out.println(customer);
         try {
             Customer savedCustomer = customerService.saveCustomer(customer);
             return ResponseEntity.ok(savedCustomer);
@@ -64,6 +65,11 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> editCustomer(@PathVariable Long id) {
+        return ResponseEntity.ok().body(customerService.getCustomer(id));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Page<Customer>> searchCustomers(
             @RequestParam(required = false) String name,
@@ -83,7 +89,7 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> findCustomers(
             @RequestParam String searchCus
     ) {
-        return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+        return ResponseEntity.ok().body(customerService.getCustomerByName(searchCus));
     }
 
     @GetMapping("/list-add")

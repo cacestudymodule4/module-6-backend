@@ -16,10 +16,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private ContractService contractService;
 
-
     @Override
     public Page<Customer> getAllCustomers(Pageable pageable) {
-        return customerRepository.findAll(pageable);
+        return customerRepository.findAllCustomersSorted(pageable);
     }
 
     @Override
@@ -29,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomer(Long id) {
-        Customer customer = findCustomer(id);
+        Customer customer = getCustomer(id);
         if (customer == null) {
             throw new IllegalArgumentException("Không tìm thấy khách hàng");
         }
@@ -74,30 +73,24 @@ public class CustomerServiceImpl implements CustomerService {
         existingCustomer.setPhone(updatedCustomer.getPhone());
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setCompany(updatedCustomer.getCompany());
+        existingCustomer.setGender(updatedCustomer.getGender());
         return customerRepository.save(existingCustomer);
     }
 
     @Override
-    public Customer findByIdentification(String identification) {
-        return customerRepository.findByIdentification(identification);
-    }
-
-    @Override
-    public Customer findCustomer(Long id) {
+    public Customer getCustomer(Long id) {
         return customerRepository.findById(id).orElse(null);
     }
 
     @Override
-
-    public List<Customer> findCustomerByName(String name) {
+    public List<Customer> getCustomerByName(String name) {
         return customerRepository.findByNameContaining(name);
-
     }
 
     @Override
     public Page<Customer> searchCustomers(String name, String identification, Pageable pageable) {
         if (name != null && identification != null) {
-            return customerRepository.findByNameContainingAndIdentificationContaining(name, identification, pageable);
+            return customerRepository.findByNameAndIdentification(name, identification, pageable);
         } else if (name != null) {
             return customerRepository.findByNameContaining(name, pageable);
         } else if (identification != null) {
