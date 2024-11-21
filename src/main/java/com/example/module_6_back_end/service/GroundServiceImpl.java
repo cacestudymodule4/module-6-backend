@@ -74,4 +74,14 @@ public class GroundServiceImpl implements GroundService {
     public void setGround(Ground ground) {
         groundRepository.save(ground);
     }
+
+    @Override
+    public Page<Ground> findAllByDeletedFalse(Pageable pageable) {
+        return groundRepository.findAllByDeletedFalse(pageable);
+    }
+
+    @Override
+    public Ground findGroundById(Long id) {
+        return groundRepository.findById(id).orElse(null);
+    }
 }

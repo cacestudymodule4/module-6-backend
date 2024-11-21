@@ -20,4 +20,5 @@ public class Ground {
     private Boolean status;
     private double area;
     private double price;
+    private Boolean deleted = false;
 }

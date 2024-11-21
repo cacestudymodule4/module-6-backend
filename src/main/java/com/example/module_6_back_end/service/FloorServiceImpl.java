@@ -48,4 +48,14 @@ public class FloorServiceImpl implements FloorService {
     public List<Floor> getFloors() {
         return floorRepository.findAll();
     }
+
+    @Override
+    public Page<Floor> findAllByDeletedFalse(Pageable pageable) {
+        return floorRepository.findAllByDeletedFalse(pageable);
+    }
+
+    @Override
+    public Floor findFloorById(Long id) {
+        return floorRepository.findById(id).orElse(null);
+    }
 }
