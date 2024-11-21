@@ -95,7 +95,7 @@ public class ServiceController {
         for (GroundServices groundService : groundServices) {
             Map<String, Object> groundData = new HashMap<>();
             groundData.put("groundId", groundService.getGround().getId());
-            groundData.put("groundName", groundService.getGround().getName());
+            groundData.put("groundName", groundService.getGround().getGroundCode());
             groundData.put("consumption", groundService.getConsumption());
             groundData.put("startDate", groundService.getStartDate());
 
