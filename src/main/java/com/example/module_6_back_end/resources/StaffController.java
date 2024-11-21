@@ -107,6 +107,6 @@ public class StaffController {
 
     @GetMapping("/findStaff")
     public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
-        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
+        return ResponseEntity.ok().body(staffService.getStaffByNameContaining(searchStaff));
     }
 }
