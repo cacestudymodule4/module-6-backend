@@ -135,7 +135,7 @@ public class ContractController {
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listAllOrExpiringSoon() {
         LocalDate oneMonthFromNow = LocalDate.now().plusMonths(1);
-        List<Ground> grounds = contractService.findAddGroundH(oneMonthFromNow);
+        List<Ground> grounds = contractService.getAddGroundH(oneMonthFromNow);
         List<Ground> groundsWithoutContract = groundService.findGroundNotInContract();
         Set<Ground> combinedGrounds = new HashSet<>();
         combinedGrounds.addAll(grounds);

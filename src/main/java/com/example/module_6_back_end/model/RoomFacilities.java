@@ -21,4 +21,5 @@ public class RoomFacilities {
     private String description;
     @ManyToOne
     private FacilitiesType facilitiesType;
+
 }

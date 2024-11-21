@@ -83,7 +83,7 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> findCustomers(
             @RequestParam String searchCus
     ) {
-        return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+        return ResponseEntity.ok().body(customerService.getCustomerByName(searchCus));
     }
 
     @GetMapping("/list-add")

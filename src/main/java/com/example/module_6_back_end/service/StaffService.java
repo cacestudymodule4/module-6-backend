@@ -22,7 +22,7 @@ public interface StaffService {
 
     Staff saveStaff(Staff staff);
 
-    List<Staff> findByNameContaining(String name);
+    List<Staff> getStaffByNameContaining(String name);
 
     boolean existsByCodeStaff(String codeStaff);
 

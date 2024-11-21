@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomFacilitiesServicelmpl implements RoomFacilitiesService {
     @Autowired
@@ -14,7 +16,7 @@ public class RoomFacilitiesServicelmpl implements RoomFacilitiesService {
 
     @Override
     public Page<RoomFacilities> getAllRoomFacilities(Pageable pageable) {
-        return roomFacilitiesRepository.findAll(pageable);
+        return roomFacilitiesRepository.findAllRoomFacilitiesOrderByIdDesc(pageable);
     }
 
     @Override
@@ -30,5 +32,15 @@ public class RoomFacilitiesServicelmpl implements RoomFacilitiesService {
     @Override
     public void deleteRoomFacilitiesById(Long id) {
         roomFacilitiesRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<RoomFacilities> searchRoomFacilities(String facilitiesType, String facilitiesName, String ground, Pageable pageable) {
+        return roomFacilitiesRepository.searchRoomFacilitiesBy(facilitiesType, facilitiesName, ground, pageable);
+    }
+
+    @Override
+    public List<RoomFacilities> getListFacilities() {
+        return  roomFacilitiesRepository.findAll();
     }
 }
