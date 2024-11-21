@@ -21,7 +21,7 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
                             @Param("price") Double price,
                             Pageable pageable);
 
-    List<Ground> findByGroundCategory(String groundCategory);
+    List<Ground> findByStatus(Boolean status);
 
     List<Ground> findByGroundCodeContaining(String groundCode);
 

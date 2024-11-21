@@ -25,8 +25,8 @@ public class GroundServiceImpl implements GroundService {
     }
 
     @Override
-    public List<Ground> findByGroundCategory(String groundCategory) {
-        return groundRepository.findByGroundCategory(groundCategory);
+    public List<Ground> getGroundByStatus(Boolean status) {
+        return groundRepository.findByStatus(status);
     }
 
     @Override

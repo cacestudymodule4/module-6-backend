@@ -73,17 +73,8 @@ public class ContractController {
             @RequestBody Contract contract
     ) throws Exception {
         List<Contract> list = contractService.getContracts();
-        boolean contractExists = false;
-        for (Contract existingContract : list) {
-            if (existingContract.getGround().getGroundCode().equals(contract.getGround().getGroundCode())) {
-                contractExists = true;
-                break;
-            }
-        }
-        if (contractExists) {
-            contract.getGround().setStatus(true);
-            groundService.setGround(contract.getGround());
-        }
+        contract.getGround().setStatus(true);
+        groundService.setGround(contract.getGround());
         String codeTax = contractService.generateUniqueTaxCode();
         String codeContract = contractService.generateCode();
         contract.setTaxCode(codeTax);
@@ -147,11 +138,12 @@ public class ContractController {
 
     @GetMapping("/checkDay")
     public ResponseEntity<LocalDate> checkContracts(
-            @RequestParam(required = false) String day
+            @RequestParam(required = false) Boolean status
     ) {
         List<Contract> list = contractService.getContracts();
+        System.out.println(status);
         for (Contract contract : list) {
-            if (contract.getGround().getGroundCode().equals(day)) {
+            if (contract.getGround().getStatus().equals(status)) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
