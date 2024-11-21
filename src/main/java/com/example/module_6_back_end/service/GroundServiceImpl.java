@@ -71,4 +71,8 @@ public class GroundServiceImpl implements GroundService {
         return groundRepository.searchGround(groundCode, area, price, pageable);
     }
 
+    @Override
+    public void setGround(Ground ground) {
+        groundRepository.save(ground);
+    }
 }

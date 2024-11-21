@@ -15,7 +15,7 @@ public interface RoomFacilitiesRepository extends JpaRepository<RoomFacilities, 
     @Query("SELECT f FROM RoomFacilities f WHERE "
             + "(:facilitiesType IS NULL OR f.facilitiesType.name LIKE CONCAT('%', :facilitiesType, '%')) "
             + "AND (:facilitiesName IS NULL OR f.name Like CONCAT('%', :facilitiesName, '%')) "
-            + "AND (:ground IS NULL OR f.ground.name LIKE CONCAT('%', :ground, '%')) ")
+            + "AND (:ground IS NULL OR f.ground.groundCode LIKE CONCAT('%', :ground, '%')) ")
     Page<RoomFacilities> searchRoomFacilitiesBy(@Param("facilitiesType") String facilitiesType,
                                   @Param("facilitiesName") String facilitiesName,
                                   @Param("ground") String ground,

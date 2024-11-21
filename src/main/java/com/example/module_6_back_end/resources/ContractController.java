@@ -35,8 +35,8 @@ public class ContractController {
         LocalDate currentDay = LocalDate.now();
         for (Contract contract : list) {
             if (contract.getEndDate().isBefore(currentDay)) {
-                contract.getGround().setGroundCategory("ok");
-                groundService.saveGround(contract.getGround());
+                contract.getGround().setStatus(false);
+                groundService.setGround(contract.getGround());
             }
         }
         return ResponseEntity.ok().body(contractService.getContracts());
@@ -45,8 +45,8 @@ public class ContractController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         Contract contract = contractService.getContractById(id);
-        contract.getGround().setGroundCategory("ok");
-        groundService.saveGround(contract.getGround());
+        contract.getGround().setStatus(false);
+        groundService.setGround(contract.getGround());
         try {
             contractService.deleteContract(id);
             return ResponseEntity.noContent().build();
@@ -81,8 +81,8 @@ public class ContractController {
             }
         }
         if (contractExists) {
-            contract.getGround().setGroundCategory("not ok");
-            groundService.saveGround(contract.getGround());
+            contract.getGround().setStatus(true);
+            groundService.setGround(contract.getGround());
         }
         String codeTax = contractService.generateUniqueTaxCode();
         String codeContract = contractService.generateCode();
@@ -96,7 +96,6 @@ public class ContractController {
     public ResponseEntity<Void> save(
             @RequestBody Contract contract
     ) {
-        System.out.println("đã vào đc");
         Contract contractEdit = contractService.getContractById(contract.getId());
         contractEdit.setStaff(contract.getStaff());
         contractEdit.setCustomer(contract.getCustomer());
