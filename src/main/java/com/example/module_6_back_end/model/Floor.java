@@ -20,4 +20,5 @@ public class Floor {
     private String typeOfFloor;
     @ManyToOne
     private Building building;
+    private Boolean deleted = false;
 }
