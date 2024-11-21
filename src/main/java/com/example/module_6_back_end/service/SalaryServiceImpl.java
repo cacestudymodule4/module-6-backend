@@ -25,7 +25,7 @@ public class SalaryServiceImpl implements SalaryService {
                 ? Sort.by(pageRequest.getSort()).ascending()
                 : Sort.by(pageRequest.getSort()).descending();
         Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), sort);
-        return staffRepository.searchStaff("%" + pageRequest.getQ() + "%", pageable)
+        return staffRepository.findStaff("%" + pageRequest.getQ() + "%", pageable)
                 .map(staffEntity -> {
                     SalaryResponse salaryResponse = new SalaryResponse();
                     BeanUtils.copyProperties(staffEntity, salaryResponse);

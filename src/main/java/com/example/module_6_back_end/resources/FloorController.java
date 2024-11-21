@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/floor")
 public class FloorController {
@@ -64,5 +66,14 @@ public class FloorController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllFloors() {
+        List<Floor> floors = floorService.getFloors();
+        if (floors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(floors, HttpStatus.OK);
     }
 }

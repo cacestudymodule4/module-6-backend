@@ -34,7 +34,7 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User userInfo = userInfoService.getUserByEmailOrUsername(userRequest.getUsername());
-        return ResponseEntity.ok(new JwtResponse(jwt, userInfo.getEmail(), userDetails.getAuthorities()));
+        User userInfo = userInfoService.getUserByEmailOrUsernameOrPhone(userRequest.getUsername());
+        return ResponseEntity.ok(new JwtResponse(jwt, userInfo.getStaff().getEmail(), userDetails.getAuthorities()));
     }
 }
