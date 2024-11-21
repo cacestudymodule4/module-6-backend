@@ -71,13 +71,8 @@ public class GroundServicesServiceImpl implements GroundServicesService {
                 .orElseThrow(() -> new IllegalArgumentException("Dịch vụ không tồn tại."));
         Ground ground = groundRepository.findById(groundId)
                 .orElseThrow(() -> new IllegalArgumentException("Mặt bằng không tồn tại."));
-        GroundServices groundServices = groundServicesRepository.findByServicesAndGround(services, ground)
+        return groundServicesRepository.findByServicesAndGround(services, ground)
                 .orElseThrow(() -> new IllegalArgumentException("Mặt bằng không tồn tại trong dịch vụ này"));
-        String groundName = groundRepository.findById(groundId)
-                .map(Ground::getGroundCode)
-                .orElse("Tên mặt bằng không tồn tại");
-        groundServices.getGround().setGroundCode(groundName);
-        return groundServices;
     }
 
     @Override

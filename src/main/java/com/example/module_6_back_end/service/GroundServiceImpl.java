@@ -1,6 +1,5 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.model.Floor;
 import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.repository.GroundRepository;
 import org.springframework.beans.factory.annotation.Autowired;

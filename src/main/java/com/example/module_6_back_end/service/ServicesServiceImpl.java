@@ -17,14 +17,9 @@ public class ServicesServiceImpl implements ServicesService {
     private GroundServicesService groundServicesService;
 
     @Override
-    public Page<Services> getAllServices(Pageable pageable) {
-        return serviceRepository.findAllServicesSorted(pageable);
-    }
-
-    @Override
     public Page<Services> searchServices(String name, Pageable pageable) {
         if (name == null || name.isBlank()) {
-            return serviceRepository.findAll(pageable);
+            return serviceRepository.findAllServicesSorted(pageable);
         }
         return serviceRepository.findByNameContainingIgnoreCase(name, pageable);
     }
