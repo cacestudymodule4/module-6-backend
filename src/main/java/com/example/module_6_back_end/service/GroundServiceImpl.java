@@ -55,12 +55,12 @@ public class GroundServiceImpl implements GroundService {
         System.out.println(ground);
         if (ground.getId() == null) {
             if (groundRepository.existsByGroundCode(ground.getGroundCode())) {
-                throw new Exception("Mã tầng lầu đã tồn tại");
+                throw new Exception("Mã mặt bằng đã tồn tại");
             }
         } else {
             Ground existingGround = groundRepository.findByGroundCode(ground.getGroundCode());
             if (existingGround != null && !existingGround.getId().equals(ground.getId())) {
-                throw new Exception("Mã tầng lầu đã tồn tại");
+                throw new Exception("Mã mặt bằng đã tồn tại");
             }
         }
         groundRepository.save(ground);
