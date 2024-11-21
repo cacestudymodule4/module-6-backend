@@ -32,4 +32,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     boolean existsByCodeStaff(String codeStaff);
 
     boolean existsByPhone(String phone);
+
+    List<Staff> findByCodeStaffNotContaining(String code);
 }

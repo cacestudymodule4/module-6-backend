@@ -11,7 +11,7 @@ public interface GroundService {
 
     Ground getGround(Long id);
 
-    List<Ground> findByGroundCategory(String groundCategory);
+    List<Ground> getGroundByStatus(Boolean status);
 
     List<Ground> findByGroundCodeContaining(String groundCode);
 

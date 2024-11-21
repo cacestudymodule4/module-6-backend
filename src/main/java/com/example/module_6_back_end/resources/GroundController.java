@@ -28,7 +28,7 @@ public class GroundController {
 
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listNotRented() {
-        return ResponseEntity.ok().body(groundService.findByGroundCategory("chưa thuê"));
+        return ResponseEntity.ok().body(groundService.getGroundByStatus(false));
     }
 
     @GetMapping("/findGround")
