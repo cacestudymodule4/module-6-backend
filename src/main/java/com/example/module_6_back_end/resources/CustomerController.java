@@ -21,11 +21,11 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/list")
-    public ResponseEntity<Page<Customer>> getAllCustomers( @RequestParam("page") int page,@RequestParam("size") int size) {
+    public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam("page") int page, @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         try {
             return ResponseEntity.ok().body(customerService.getAllCustomers(pageable));
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -42,6 +42,7 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addCustomer(@RequestBody Customer customer) {
+        System.out.println(customer);
         try {
             Customer savedCustomer = customerService.saveCustomer(customer);
             return ResponseEntity.ok(savedCustomer);
@@ -54,6 +55,7 @@ public class CustomerController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer updatedCustomer) {
+        System.out.println(id);
         try {
             Customer customer = customerService.updateCustomer(id, updatedCustomer);
             return ResponseEntity.ok(customer);
@@ -64,12 +66,17 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> editCustomer(@PathVariable Long id) {
+        return ResponseEntity.ok().body(customerService.getCustomer(id));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Page<Customer>> searchCustomers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String identification,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         try {
             Page<Customer> result = customerService.searchCustomers(name, identification, pageable);
@@ -83,7 +90,7 @@ public class CustomerController {
     public ResponseEntity<List<Customer>> findCustomers(
             @RequestParam String searchCus
     ) {
-        return ResponseEntity.ok().body(customerService.findCustomerByName(searchCus));
+        return ResponseEntity.ok().body(customerService.getCustomerByName(searchCus));
     }
 
     @GetMapping("/list-add")

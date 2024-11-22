@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.resources;
 
+import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.GroundServices;
 import com.example.module_6_back_end.model.Services;
 import com.example.module_6_back_end.service.GroundServicesService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,11 @@ public class ServiceController {
         }
     }
 
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> editService(@PathVariable Long id) {
+        return ResponseEntity.ok().body(servicesService.getById(id));
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateService(@PathVariable Long id, @RequestBody Services updatedService) {
         try {
@@ -69,14 +76,12 @@ public class ServiceController {
             return ResponseEntity.ok(savedService);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
         }
     }
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> getServiceDetail(@PathVariable Long id) {
-        Services service = servicesService.findById(id);
+        Services service = servicesService.getById(id);
         if (service == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dịch vụ không tồn tại");
         }
@@ -89,7 +94,8 @@ public class ServiceController {
 
         for (GroundServices groundService : groundServices) {
             Map<String, Object> groundData = new HashMap<>();
-            groundData.put("groundName", groundService.getGround().getName());
+            groundData.put("groundId", groundService.getGround().getId());
+            groundData.put("groundName", groundService.getGround().getGroundCode());
             groundData.put("consumption", groundService.getConsumption());
             groundData.put("startDate", groundService.getStartDate());
 
@@ -100,5 +106,55 @@ public class ServiceController {
         response.put("grounds", groundsResponse);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/not-using-service/{serviceId}")
+    public ResponseEntity<List<Ground>> getGroundsNotUsingService(@PathVariable Long serviceId) {
+        List<Ground> grounds = groundServicesService.getGroundsNotUsingService(serviceId);
+        return ResponseEntity.ok(grounds);
+    }
+
+    @PostMapping("/add-service-to-gr")
+    public ResponseEntity<?> addServiceToGround(
+            @RequestParam Long serviceId,
+            @RequestParam Long groundId,
+            @RequestParam double consumption,
+            @RequestParam LocalDate startDate) {
+        try {
+            groundServicesService.addServiceToGround(serviceId, groundId, consumption, startDate);
+            return ResponseEntity.ok("Dịch vụ đã được thêm thành công");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/{serviceId}/grounds/{groundId}")
+    public ResponseEntity<?> deleteGroundFromService(
+            @PathVariable Long serviceId,
+            @PathVariable Long groundId) {
+        try {
+            groundServicesService.deleteGroundFromService(serviceId, groundId);
+            return ResponseEntity.ok("Xóa mặt bằng thành công.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("update/{serviceId}/grounds/{groundId}")
+    public ResponseEntity<Void> updateGroundService(
+            @PathVariable Long serviceId,
+            @PathVariable Long groundId,
+            @RequestParam double consumption,
+            @RequestParam LocalDate startDate) {
+        groundServicesService.updateGroundService(serviceId, groundId, consumption, startDate);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/edit/{serviceId}/grounds/{groundId}")
+    public ResponseEntity<GroundServices> fetchGroundDetail(
+            @PathVariable Long serviceId,
+            @PathVariable Long groundId) {
+        GroundServices groundServices = groundServicesService.fetchGroundDetail(serviceId, groundId);
+        return ResponseEntity.ok(groundServices);
     }
 }

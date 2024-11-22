@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FloorServiceImpl implements FloorService {
     @Autowired
@@ -40,5 +42,20 @@ public class FloorServiceImpl implements FloorService {
     @Override
     public Page<Floor> searchFloors(String name, Double area, String typeOfFloor, Pageable pageable) {
         return floorRepository.searchFloor(name, area, typeOfFloor, pageable);
+    }
+
+    @Override
+    public List<Floor> getFloors() {
+        return floorRepository.findAll();
+    }
+
+    @Override
+    public Page<Floor> findAllByDeletedFalse(Pageable pageable) {
+        return floorRepository.findAllByDeletedFalse(pageable);
+    }
+
+    @Override
+    public Floor findFloorById(Long id) {
+        return floorRepository.findById(id).orElse(null);
     }
 }

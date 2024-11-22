@@ -1,6 +1,10 @@
 package com.example.module_6_back_end.service;
 
+import com.example.module_6_back_end.exception.UnauthorizedException;
+import com.example.module_6_back_end.model.Role;
 import com.example.module_6_back_end.model.Staff;
+import com.example.module_6_back_end.model.User;
+import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,11 +19,15 @@ public class StaffServiceImpl implements StaffService {
     private final StaffRepository staffRepository;
     private final ContractService contractService;
     private final RegisterService registerService;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
 
-    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService, UserService userService, RoleRepository roleRepository) {
         this.staffRepository = staffRepository;
         this.contractService = contractService;
         this.registerService = registerService;
+        this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -39,6 +47,10 @@ public class StaffServiceImpl implements StaffService {
             throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
         }
         contractService.deleteContracts(staff);
+        User user = userService.getUserByStaff(staff);
+        List<Role> roles = roleRepository.findByUser(user);
+        roleRepository.deleteAll(roles);
+        userService.deleteUser(user);
         staffRepository.deleteById(id);
     }
 
@@ -73,6 +85,13 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
+        User auTh = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(auTh);
+        boolean isAdmin = roles.stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
+        if (!isAdmin) {
+            throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
+        }
         Staff newStaff = staffRepository.save(staff);
         registerService.registerUser(newStaff);
         return newStaff;
@@ -91,12 +110,12 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> findByNameContaining(String name) {
+    public List<Staff> getStaffByNameContaining(String name) {
         return staffRepository.findByNameContaining(name);
     }
 
     @Override
     public List<Staff> getStaffList() {
-        return staffRepository.findAll();
+        return staffRepository.findByCodeStaffNotContaining("STF001");
     }
 }

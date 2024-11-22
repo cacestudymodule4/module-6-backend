@@ -42,10 +42,15 @@ public class StaffController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
         try {
+            System.out.println("Đang xóa nhân viên với ID: " + id);
             staffService.deleteStaff(id);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Lỗi không xác định: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi không xác định");
         }
     }
 
@@ -64,8 +69,7 @@ public class StaffController {
         }
 
         try {
-            Staff savedStaff = staffService.saveStaff(staff);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedStaff);
+            return ResponseEntity.status(HttpStatus.CREATED).body(staffService.saveStaff(staff));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong quá trình thêm");
         }
@@ -103,6 +107,6 @@ public class StaffController {
 
     @GetMapping("/findStaff")
     public ResponseEntity<List<Staff>> findStaff(@RequestParam String searchStaff) {
-        return ResponseEntity.ok().body(staffService.findByNameContaining(searchStaff));
+        return ResponseEntity.ok().body(staffService.getStaffByNameContaining(searchStaff));
     }
 }

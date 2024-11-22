@@ -4,6 +4,8 @@ import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.service.ContractService;
 import com.example.module_6_back_end.service.GroundService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/contract")
 public class ContractController {
+    private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
     private final GroundService groundService;
 
@@ -32,8 +35,8 @@ public class ContractController {
         LocalDate currentDay = LocalDate.now();
         for (Contract contract : list) {
             if (contract.getEndDate().isBefore(currentDay)) {
-                contract.getGround().setGroundCategory("ok");
-                groundService.saveGround(contract.getGround());
+                contract.getGround().setStatus(false);
+                groundService.setGround(contract.getGround());
             }
         }
         return ResponseEntity.ok().body(contractService.getContracts());
@@ -42,8 +45,8 @@ public class ContractController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
         Contract contract = contractService.getContractById(id);
-        contract.getGround().setGroundCategory("ok");
-        groundService.saveGround(contract.getGround());
+        contract.getGround().setStatus(false);
+        groundService.setGround(contract.getGround());
         try {
             contractService.deleteContract(id);
             return ResponseEntity.noContent().build();
@@ -68,19 +71,9 @@ public class ContractController {
     @PostMapping("/add")
     public ResponseEntity<Void> add(
             @RequestBody Contract contract
-    ) {
-        List<Contract> list = contractService.getContracts();
-        boolean contractExists = false;
-        for (Contract existingContract : list) {
-            if (existingContract.getGround().getName().equals(contract.getGround().getName())) {
-                contractExists = true;
-                break;
-            }
-        }
-        if (contractExists) {
-            contract.getGround().setGroundCategory("not ok");
-            groundService.saveGround(contract.getGround());
-        }
+    ) throws Exception {
+        contract.getGround().setStatus(true);
+        groundService.setGround(contract.getGround());
         String codeTax = contractService.generateUniqueTaxCode();
         String codeContract = contractService.generateCode();
         contract.setTaxCode(codeTax);
@@ -93,7 +86,6 @@ public class ContractController {
     public ResponseEntity<Void> save(
             @RequestBody Contract contract
     ) {
-        System.out.println("đã vào đc");
         Contract contractEdit = contractService.getContractById(contract.getId());
         contractEdit.setStaff(contract.getStaff());
         contractEdit.setCustomer(contract.getCustomer());
@@ -135,7 +127,7 @@ public class ContractController {
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listAllOrExpiringSoon() {
         LocalDate oneMonthFromNow = LocalDate.now().plusMonths(1);
-        List<Ground> grounds = contractService.findAddGroundH(oneMonthFromNow);
+        List<Ground> grounds = contractService.getAddGroundH(oneMonthFromNow);
         List<Ground> groundsWithoutContract = groundService.findGroundNotInContract();
         Set<Ground> combinedGrounds = new HashSet<>();
         combinedGrounds.addAll(grounds);
@@ -145,11 +137,12 @@ public class ContractController {
 
     @GetMapping("/checkDay")
     public ResponseEntity<LocalDate> checkContracts(
-            @RequestParam(required = false) String day
+            @RequestParam(required = false) Boolean status
     ) {
         List<Contract> list = contractService.getContracts();
+        System.out.println(status);
         for (Contract contract : list) {
-            if (contract.getGround().getName().equals(day) && contract.getGround().getGroundCategory().equals("not ok")) {
+            if (contract.getGround().getStatus().equals(status)) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }

@@ -21,10 +21,10 @@ public class ReportServiceImpl implements ReportService {
         List<Contract> contracts = contractService.getContractsByStartDateAndEndDate(reportRequest);
         Map<String, Double> revenue = new LinkedHashMap<>();
         for (Contract contract : contracts) {
-            if (revenue.containsKey(contract.getGround().getName())) {
-                revenue.put(contract.getGround().getName(), revenue.get(contract.getGround().getName()) + contract.getTotalPrice());
+            if (revenue.containsKey(contract.getGround().getGroundCode())) {
+                revenue.put(contract.getGround().getGroundCode(), revenue.get(contract.getGround().getGroundCode()) + contract.getTotalPrice());
             } else {
-                revenue.put(contract.getGround().getName(), contract.getTotalPrice());
+                revenue.put(contract.getGround().getGroundCode(), contract.getTotalPrice());
             }
         }
         return revenue;

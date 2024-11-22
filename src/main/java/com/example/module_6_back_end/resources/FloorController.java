@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/floor")
 public class FloorController {
@@ -18,7 +20,7 @@ public class FloorController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getListFloor(@PageableDefault(size = 5) Pageable pageable) {
-        Page<Floor> floors = floorService.getAllFloors(pageable);
+        Page<Floor> floors = floorService.findAllByDeletedFalse(pageable);
         if (floors.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -28,7 +30,9 @@ public class FloorController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteFloor(@PathVariable Long id) {
         try {
-            floorService.deleteFloor(id);
+            Floor floor = floorService.findFloorById(id);
+            floor.setDeleted(true);
+            floorService.saveFloor(floor);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -64,5 +68,21 @@ public class FloorController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllFloors() {
+        List<Floor> floors = floorService.getFloors();
+        if (floors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(floors, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-list")
+    public ResponseEntity<List<Floor>> getListSearch(){
+        List<Floor> floors = floorService.getFloors();
+        System.out.println(floors);
+        return ResponseEntity.ok().body(floors);
     }
 }

@@ -17,13 +17,9 @@ public class ServicesServiceImpl implements ServicesService {
     private GroundServicesService groundServicesService;
 
     @Override
-    public Page<Services> getAllServices(Pageable pageable) {
-        return serviceRepository.findAll(pageable);
-    }
-    @Override
     public Page<Services> searchServices(String name, Pageable pageable) {
         if (name == null || name.isBlank()) {
-            return serviceRepository.findAll(pageable); // Nếu không có từ khóa, trả về toàn bộ danh sách
+            return serviceRepository.findAllServicesSorted(pageable);
         }
         return serviceRepository.findByNameContainingIgnoreCase(name, pageable);
     }
@@ -52,7 +48,6 @@ public class ServicesServiceImpl implements ServicesService {
         return serviceRepository.save(existingService);
     }
 
-
     @Override
     public Services addService(Services newService) {
         if (serviceRepository.existsByName(newService.getName())) {
@@ -61,10 +56,8 @@ public class ServicesServiceImpl implements ServicesService {
         return serviceRepository.save(newService);
     }
 
-
-
     @Override
-    public Services findById(Long id) {
+    public Services getById(Long id) {
         Optional<Services> optionalService = serviceRepository.findById(id);
         if (optionalService.isPresent()) {
             return optionalService.get();

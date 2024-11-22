@@ -13,10 +13,12 @@ public class Ground {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
     @ManyToOne
     private Floor floor;
+    private String groundCode;
     private String groundCategory;
+    private Boolean status;
     private double area;
     private double price;
+    private Boolean deleted = false;
 }
