@@ -116,6 +116,6 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<Staff> getStaffList() {
-        return staffRepository.findAll();
+        return staffRepository.findByCodeStaffNotContaining("STF001");
     }
 }

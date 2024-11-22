@@ -27,7 +27,7 @@ public class GroundController {
 
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listNotRented() {
-        return ResponseEntity.ok().body(groundService.findByGroundCategory("chưa thuê"));
+        return ResponseEntity.ok().body(groundService.getGroundByStatus(false));
     }
 
     @GetMapping("/findGround")
@@ -39,7 +39,7 @@ public class GroundController {
 
     @GetMapping("/get-all")
     public ResponseEntity<?> getAll(@PageableDefault(size = 5) Pageable pageable) {
-        Page<Ground> grounds = groundService.getAllGrounds(pageable);
+        Page<Ground> grounds = groundService.findAllByDeletedFalse(pageable);
         if (grounds.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -49,8 +49,14 @@ public class GroundController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteGround(@PathVariable Long id) {
         try {
-            groundService.deleteGround(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            Ground ground = groundService.findGroundById(id);
+            if (ground.getStatus()) {
+                return new ResponseEntity<>("Mặt bằng đang thuê, không được phép xoá", HttpStatus.BAD_REQUEST);
+            } else {
+                ground.setDeleted(true);
+                groundService.setGround(ground);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

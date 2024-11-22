@@ -11,7 +11,7 @@ public interface GroundService {
 
     Ground getGround(Long id);
 
-    List<Ground> findByGroundCategory(String groundCategory);
+    List<Ground> getGroundByStatus(Boolean status);
 
     List<Ground> findByGroundCodeContaining(String groundCode);
 
@@ -26,4 +26,8 @@ public interface GroundService {
     Page<Ground> searchGrounds(String groundCode, Double area, Double price, Pageable pageable);
 
     void setGround(Ground ground);
+
+    Page<Ground> findAllByDeletedFalse(Pageable pageable);
+
+    Ground findGroundById(Long id);
 }

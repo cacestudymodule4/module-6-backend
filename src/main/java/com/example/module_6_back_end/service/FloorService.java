@@ -16,4 +16,8 @@ public interface FloorService {
     Page<Floor> searchFloors(String name, Double area, String typeOfFloor, Pageable pageable);
 
     List<Floor> getFloors();
+
+    Page<Floor> findAllByDeletedFalse(Pageable pageable);
+
+    Floor findFloorById(Long id);
 }
