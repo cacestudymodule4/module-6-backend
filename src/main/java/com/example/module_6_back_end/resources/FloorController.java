@@ -78,4 +78,11 @@ public class FloorController {
         }
         return new ResponseEntity<>(floors, HttpStatus.OK);
     }
+
+    @GetMapping("/get-list")
+    public ResponseEntity<List<Floor>> getListSearch(){
+        List<Floor> floors = floorService.getFloors();
+        System.out.println(floors);
+        return ResponseEntity.ok().body(floors);
+    }
 }
