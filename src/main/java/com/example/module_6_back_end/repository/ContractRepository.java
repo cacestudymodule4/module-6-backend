@@ -47,7 +47,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c ORDER BY c.id DESC")
     Page<Contract> findAllContractsOrderByIdDesc(Pageable pageable);
 
-    @Query("SELECT c.ground FROM Contract c WHERE c.endDate <= :oneMonthFromNow AND c.ground.groundCategory != 'not ok'")
+    @Query("SELECT c.ground FROM Contract c WHERE c.endDate <= :oneMonthFromNow")
     List<Ground> findGroundsWithContractsEndingInOneMonth(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
 
 }

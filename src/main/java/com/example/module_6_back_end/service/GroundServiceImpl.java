@@ -25,8 +25,8 @@ public class GroundServiceImpl implements GroundService {
     }
 
     @Override
-    public List<Ground> findByGroundCategory(String groundCategory) {
-        return groundRepository.findByGroundCategory(groundCategory);
+    public List<Ground> getGroundByStatus(Boolean status) {
+        return groundRepository.findByStatus(status);
     }
 
     @Override
@@ -73,5 +73,15 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public void setGround(Ground ground) {
         groundRepository.save(ground);
+    }
+
+    @Override
+    public Page<Ground> findAllByDeletedFalse(Pageable pageable) {
+        return groundRepository.findAllByDeletedFalse(pageable);
+    }
+
+    @Override
+    public Ground findGroundById(Long id) {
+        return groundRepository.findById(id).orElse(null);
     }
 }

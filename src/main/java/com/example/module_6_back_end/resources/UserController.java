@@ -20,7 +20,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserDetail() {
         User user = userService.getCurrentUser();
         UserResponse userDTO = new UserResponse();
-        BeanUtils.copyProperties(user, userDTO);
+        BeanUtils.copyProperties(user.getStaff(), userDTO);
         return ResponseEntity.ok().body(userDTO);
     }
 }
