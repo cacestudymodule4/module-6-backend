@@ -45,4 +45,6 @@ public interface ContractService {
     Page<Contract> getAllContracts(Pageable pageable);
 
     List<Ground> getAddGroundH( LocalDate oneMonthFromNow);
+
+    List<Contract> getActiveContractByStaff(Staff staff);
 }

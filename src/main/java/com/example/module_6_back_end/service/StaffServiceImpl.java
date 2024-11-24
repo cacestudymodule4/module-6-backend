@@ -1,9 +1,11 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.exception.UnauthorizedException;
+import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Role;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
+import com.example.module_6_back_end.repository.ContractRepository;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.StaffRepository;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +24,15 @@ public class StaffServiceImpl implements StaffService {
     private final RegisterService registerService;
     private final UserService userService;
     private final RoleRepository roleRepository;
+    private final ContractRepository contractRepository;
 
-    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService, UserService userService, RoleRepository roleRepository) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService, UserService userService, RoleRepository roleRepository, ContractRepository contractRepository) {
         this.staffRepository = staffRepository;
         this.contractService = contractService;
         this.registerService = registerService;
         this.userService = userService;
         this.roleRepository = roleRepository;
+        this.contractRepository = contractRepository;
     }
 
     @Override
@@ -40,18 +45,25 @@ public class StaffServiceImpl implements StaffService {
         return staffRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public void deleteStaff(Long id) {
-        Staff staff = getStaffId(id);
-        if (staff == null) {
-            throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
+    public void deleteStaff(Long staffId) {
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên với ID: " + staffId));
+
+        // Kiểm tra trạng thái hợp đồng
+        boolean hasActiveContracts = staff.getContracts().stream()
+                .anyMatch(contract ->
+                        contract.getEndDate() == null || // Nếu chưa có ngày kết thúc
+                                contract.getEndDate().isAfter(LocalDate.now())); // Hợp đồng chưa hết hạn
+
+        if (hasActiveContracts) {
+            // Nếu có hợp đồng còn hiệu lực -> chỉ vô hiệu hóa
+            staff.setDeleted(true);
+            staffRepository.save(staff);
+            throw new IllegalStateException("Nhân viên đang có hợp đồng hiệu lực. Chỉ có thể vô hiệu hóa.");
+        } else {
+            // Nếu không có hợp đồng hiệu lực -> xóa hoàn toàn
+            staffRepository.delete(staff);
         }
-        contractService.deleteContracts(staff);
-        User user = userService.getUserByStaff(staff);
-        List<Role> roles = roleRepository.findByUser(user);
-        roleRepository.deleteAll(roles);
-        userService.deleteUser(user);
-        staffRepository.deleteById(id);
     }
 
     @Override

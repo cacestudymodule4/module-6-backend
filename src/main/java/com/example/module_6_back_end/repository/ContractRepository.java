@@ -50,4 +50,4 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c.ground FROM Contract c WHERE c.endDate <= :oneMonthFromNow")
     List<Ground> findGroundsWithContractsEndingInOneMonth(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
 
-}
+    boolean existsByStaffIdAndEndDateAfter(Long staffId, LocalDate date);}

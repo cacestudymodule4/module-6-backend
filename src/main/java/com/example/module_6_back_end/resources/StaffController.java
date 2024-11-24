@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Staff;
+import com.example.module_6_back_end.repository.ContractRepository;
 import com.example.module_6_back_end.service.StaffService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,15 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
     private final StaffService staffService;
+    private final ContractRepository contractRepository;
 
-    public StaffController(StaffService staffService) {
+    public StaffController(StaffService staffService, ContractRepository contractRepository) {
         this.staffService = staffService;
+        this.contractRepository = contractRepository;
     }
 
     @GetMapping("/list")
@@ -42,9 +46,14 @@ public class StaffController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
         try {
-            System.out.println("Đang xóa nhân viên với ID: " + id);
+            boolean hasActiveContract = contractRepository.existsByStaffIdAndEndDateAfter(id, LocalDate.now());
+            if (hasActiveContract) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không thể xóa nhân viên vì đang có hợp đồng hoạt động.");
+            }
+
+            System.out.println("Đang vô hiệu hóa nhân viên với ID: " + id);
             staffService.deleteStaff(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Nhân viên đã được vô hiệu hóa thành công");
         } catch (IllegalArgumentException e) {
             System.err.println("Lỗi: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -53,6 +62,7 @@ public class StaffController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi không xác định");
         }
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
