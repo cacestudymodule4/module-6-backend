@@ -16,9 +16,11 @@ public class Ground {
     @ManyToOne
     private Floor floor;
     private String groundCode;
-    private String groundCategory;
     private Boolean status;
     private double area;
     private double price;
     private Boolean deleted = false;
+
+    @ManyToOne
+    private GroundCategory groundCategory;
 }
