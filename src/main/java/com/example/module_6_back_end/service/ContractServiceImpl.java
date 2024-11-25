@@ -41,8 +41,8 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void saveContract(Contract contract) {
-        contractRepository.save(contract);
+    public Contract saveContract(Contract contract) {
+        return contractRepository.save(contract);
     }
 
     @Override

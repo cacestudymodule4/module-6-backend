@@ -5,6 +5,7 @@ import com.example.module_6_back_end.model.Ground;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.service.ContractService;
+import com.example.module_6_back_end.service.EmailService;
 import com.example.module_6_back_end.service.GroundService;
 import com.example.module_6_back_end.service.UserService;
 import org.slf4j.Logger;
@@ -26,12 +27,14 @@ public class ContractController {
     private final ContractService contractService;
     private final GroundService groundService;
     private final UserService userService;
+    private final EmailService emailService;
 
     @Autowired
-    public ContractController(ContractService contractService, GroundService groundService,UserService userService) {
+    public ContractController(ContractService contractService, GroundService groundService, UserService userService, EmailService emailService) {
         this.contractService = contractService;
         this.groundService = groundService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/list")
@@ -72,10 +75,10 @@ public class ContractController {
         Long id = auTh.getStaff().getId();
         LocalDate startDate = startDateStr != null && !startDateStr.isEmpty() ? LocalDate.parse(startDateStr) : null;
         LocalDate endDate = endDateStr != null && !endDateStr.isEmpty() ? LocalDate.parse(endDateStr) : null;
-        if(auTh.getId() == 1){
+        if (auTh.getId() == 1) {
             return ResponseEntity.ok().body(contractService.searchAllContract(startDate, endDate, taxCode, nameCustomer, pageable));
         }
-        return ResponseEntity.ok().body(contractService.searchContract(startDate, endDate, taxCode, nameCustomer,id, pageable));
+        return ResponseEntity.ok().body(contractService.searchContract(startDate, endDate, taxCode, nameCustomer, id, pageable));
     }
 
     @PostMapping("/add")
@@ -91,7 +94,9 @@ public class ContractController {
         contract.setStaff(staff);
         contract.setTaxCode(codeTax);
         contract.setCode(codeContract);
-        contractService.saveContract(contract);
+        System.out.println(contract);
+        Contract contract1 = contractService.saveContract(contract);
+        emailService.sendMail(contract1);
         return ResponseEntity.ok().build();
     }
 
@@ -117,8 +122,8 @@ public class ContractController {
     ) {
         User auTh = userService.getCurrentUser();
         Long id = auTh.getStaff().getId();
-       Page<Contract> listFilter = contractService.filterContract(id,pageable,selectedFilter);
-       return ResponseEntity.ok().body(listFilter);
+        Page<Contract> listFilter = contractService.filterContract(id, pageable, selectedFilter);
+        return ResponseEntity.ok().body(listFilter);
     }
 
     @GetMapping("/findContract/{id}")
@@ -131,10 +136,10 @@ public class ContractController {
             Pageable pageable) {
         User auTh = userService.getCurrentUser();
         Long id = auTh.getStaff().getId();
-        if(auTh.getId() == 1){
+        if (auTh.getId() == 1) {
             return ResponseEntity.ok().body(contractService.getContractForAdmin(pageable));
         }
-        return ResponseEntity.ok().body(contractService.getAllContracts(id,pageable));
+        return ResponseEntity.ok().body(contractService.getAllContracts(id, pageable));
     }
 
     @GetMapping("/list-rent")
