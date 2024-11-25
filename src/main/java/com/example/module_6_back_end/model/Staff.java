@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Getter
@@ -16,10 +15,7 @@ public class Staff extends Person {
     private double salary;
     private LocalDate startDate;
     private String position;
-    private boolean isDeleted;
-
-    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
-    private List<Contract> contracts;
+    private boolean isDisabled;
 
     @Override
     public String toString() {
@@ -28,7 +24,7 @@ public class Staff extends Person {
                 ", salary=" + salary +
                 ", startDate=" + startDate +
                 ", position='" + position + '\'' +
-                ", isDeleted=" + isDeleted +
+                ", isDisabled=" + isDisabled +
                 "} " + super.toString();
     }
 }

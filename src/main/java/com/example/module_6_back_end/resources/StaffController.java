@@ -1,8 +1,9 @@
 package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Staff;
-import com.example.module_6_back_end.repository.ContractRepository;
+import com.example.module_6_back_end.repository.StaffRepository;
 import com.example.module_6_back_end.service.StaffService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,18 +15,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
     private final StaffService staffService;
-    private final ContractRepository contractRepository;
+    private final StaffRepository staffRepository;
 
-    public StaffController(StaffService staffService, ContractRepository contractRepository) {
+    public StaffController(StaffService staffService, StaffRepository staffRepository) {
         this.staffService = staffService;
-        this.contractRepository = contractRepository;
+        this.staffRepository = staffRepository;
     }
 
     @GetMapping("/list")
@@ -43,26 +43,23 @@ public class StaffController {
         return ResponseEntity.ok().body(staffService.getStaffList());
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
+    @PatchMapping("/disable/{id}")
+    public ResponseEntity<?> disableStaff(@PathVariable Long id) {
         try {
-            boolean hasActiveContract = contractRepository.existsByStaffIdAndEndDateAfter(id, LocalDate.now());
-            if (hasActiveContract) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không thể xóa nhân viên vì đang có hợp đồng hoạt động.");
-            }
-
-            System.out.println("Đang vô hiệu hóa nhân viên với ID: " + id);
-            staffService.deleteStaff(id);
-            return ResponseEntity.ok("Nhân viên đã được vô hiệu hóa thành công");
-        } catch (IllegalArgumentException e) {
-            System.err.println("Lỗi: " + e.getMessage());
+            String result = staffService.disableStaff(id);
+            return ResponseEntity.ok(result);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Lỗi không xác định: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi không xác định");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<Staff>> getActiveStaff() {
+        List<Staff> activeStaff = staffService.getActiveStaff();
+        return ResponseEntity.ok(activeStaff);
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> addStaff(@RequestBody Staff staff) {

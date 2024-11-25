@@ -8,6 +8,7 @@ import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.ContractRepository;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.StaffRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,25 +46,29 @@ public class StaffServiceImpl implements StaffService {
         return staffRepository.findById(id).orElse(null);
     }
 
-    public void deleteStaff(Long staffId) {
+    @Override
+    public String disableStaff(Long staffId) {
+        // Tìm nhân viên
         Staff staff = staffRepository.findById(staffId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy nhân viên với ID: " + staffId));
+                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy nhân viên"));
 
-        // Kiểm tra trạng thái hợp đồng
-        boolean hasActiveContracts = staff.getContracts().stream()
-                .anyMatch(contract ->
-                        contract.getEndDate() == null || // Nếu chưa có ngày kết thúc
-                                contract.getEndDate().isAfter(LocalDate.now())); // Hợp đồng chưa hết hạn
-
-        if (hasActiveContracts) {
-            // Nếu có hợp đồng còn hiệu lực -> chỉ vô hiệu hóa
-            staff.setDeleted(true);
-            staffRepository.save(staff);
-            throw new IllegalStateException("Nhân viên đang có hợp đồng hiệu lực. Chỉ có thể vô hiệu hóa.");
-        } else {
-            // Nếu không có hợp đồng hiệu lực -> xóa hoàn toàn
-            staffRepository.delete(staff);
+        // Kiểm tra hợp đồng còn hiệu lực
+        List<Contract> contracts = contractRepository.findByStaff_Id(staffId);
+        for (Contract contract : contracts) {
+            if (contract.getEndDate() == null || contract.getEndDate().isAfter(LocalDate.now())) {
+                throw new IllegalStateException("Nhân viên này đang có hợp đồng còn hiệu lực, không thể vô hiệu hóa.");
+            }
         }
+
+        // Đánh dấu vô hiệu hóa
+        staff.setDisabled(true);
+        staffRepository.save(staff);
+        return "Nhân viên đã được vô hiệu hóa.";
+    }
+
+    @Override
+    public List<Staff> getActiveStaff() {
+        return staffRepository.findByIsDisabledFalse();
     }
 
     @Override

@@ -12,7 +12,9 @@ public interface StaffService {
 
     Staff getStaffId(Long id);
 
-    void deleteStaff(Long staffId);
+    String disableStaff(Long staffId);
+
+    List<Staff> getActiveStaff();
 
     Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable);
 

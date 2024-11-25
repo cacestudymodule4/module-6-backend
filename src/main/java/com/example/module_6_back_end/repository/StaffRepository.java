@@ -36,5 +36,5 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     List<Staff> findByCodeStaffNotContaining(String code);
 
-    List<Staff> findByIsDeletedFalse();
+    List<Staff> findByIsDisabledFalse();
 }
