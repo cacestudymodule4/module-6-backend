@@ -9,6 +9,7 @@ import com.example.module_6_back_end.repository.ContractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,8 +31,13 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer, Pageable pageable) {
-        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
+    public Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String nameCustomer, Long id, Pageable pageable) {
+        return contractRepository.searchContract(startDate, endDate, taxCode, nameCustomer, id, pageable);
+    }
+
+    @Override
+    public Page<Contract> searchAllContract(LocalDate startDate, LocalDate endDate, String taxCode, String name, Pageable pageable) {
+        return contractRepository.searchAllContract(startDate, endDate, taxCode, name, pageable);
     }
 
     @Override
@@ -122,31 +128,45 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Page<Contract> getActiveContracts(Pageable pageable) {
-        LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now, pageable);
-    }
-
-    @Override
-    public Page<Contract> getExpiredContracts(Pageable pageable) {
-        LocalDate now = LocalDate.now();
-        return contractRepository.findByEndDateLessThan(now, pageable);
-    }
-
-    @Override
-    public Page<Contract> getNotYetContract(Pageable pageable) {
-        LocalDate now = LocalDate.now();
-        return contractRepository.findByStartDateGreaterThan(now, pageable);
-    }
-
-    @Override
-    public Page<Contract> getAllContracts(Pageable pageable) {
-        return contractRepository.findAllContractsOrderByIdDesc(pageable);
+    public Page<Contract> getAllContracts(Long id, Pageable pageable) {
+        return contractRepository.findByStaffIdOrderByIdDesc(id, pageable);
     }
 
     @Override
     public List<Ground> getAddGroundH(LocalDate oneMonthFromNow) {
-        return contractRepository.findGroundsWithContractsEndingInOneMonth(oneMonthFromNow);
+        return contractRepository.findGroundsWithConditions(oneMonthFromNow);
+    }
+
+    @Override
+    public Page<Contract> getContractForAdmin(Pageable pageable) {
+        return contractRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    @Override
+    public Page<Contract> filterContract(Long id, Pageable pageable,String filter) {
+        LocalDate now = LocalDate.now();
+        if (id != 1) {
+            if ("Có hiệu lực".equals(filter)) {
+                return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThanAndStaffId(now, now, id, pageable);
+            } else if ("Hết hiệu lực".equals(filter)) {
+                return contractRepository.findByEndDateLessThanAndStaffId(now, id, pageable);
+            } else if ("Chưa có hiệu lực".equals(filter)) {
+                return contractRepository.findByStartDateGreaterThanAndStaffId(now, id, pageable);
+            } else {
+                return contractRepository.findAllByOrderByIdDesc( pageable);
+            }
+        }else{
+            if ("Có hiệu lực".equals(filter)) {
+                return contractRepository.findByStartDateLessThanEqualAndEndDateGreaterThan(now, now,pageable);
+            } else if ("Hết hiệu lực".equals(filter)) {
+                return contractRepository.findByEndDateLessThan(now, pageable);
+            } else if ("Chưa có hiệu lực".equals(filter)) {
+                return contractRepository.findByStartDateGreaterThan(now, pageable);
+            } else {
+                return contractRepository.findAllByOrderByIdDesc( pageable);
+            }
+        }
+
     }
 }
 
