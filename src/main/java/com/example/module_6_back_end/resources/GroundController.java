@@ -68,8 +68,10 @@ public class GroundController {
             groundService.saveGround(ground);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            if (e.getMessage().equals("Mã mặt bằng đã tồn tại")) {
-                return new ResponseEntity<>("Mã mặt bằng đã tồn tại", HttpStatus.BAD_REQUEST);
+            if (e.getMessage().equals("Mã mặt bằng đã tồn tại.")) {
+                return new ResponseEntity<>("Mã mặt bằng đã tồn tại.", HttpStatus.BAD_REQUEST);
+            } else if (e.getMessage().equals("Mã mặt bằng đã bị xoá trước đó")) {
+                return new ResponseEntity<>("Mã mặt bằng đã bị xoá trước đó", HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -77,14 +79,16 @@ public class GroundController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchFloor(@RequestParam(required = false) String groundCode,
-                                         @RequestParam(required = false) Double area,
-                                         @RequestParam(required = false) Double price,
+                                         @RequestParam(required = false) Double areaFrom,
+                                         @RequestParam(required = false) Double areaTo,
+                                         @RequestParam(required = false) Double priceFrom,
+                                         @RequestParam(required = false) Double priceTo,
                                          @PageableDefault(size = 5) Pageable pageable) {
         try {
             if (groundCode.isEmpty()) {
                 groundCode = null;
             }
-            Page<Ground> grounds = groundService.searchGrounds(groundCode, area, price, pageable);
+            Page<Ground> grounds = groundService.searchGrounds(groundCode, areaFrom, areaTo, priceFrom, priceTo, pageable);
             return new ResponseEntity<>(grounds, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,5 +98,13 @@ public class GroundController {
     @GetMapping("/find-gr/{id}")
     public ResponseEntity<?> getGround(@PathVariable Long id) {
         return ResponseEntity.ok().body(groundService.getGround(id));
+    }
+
+    @GetMapping("/roll-back")
+    public ResponseEntity<?> rollBackGround(@RequestParam(required = false) String groundCode) {
+        Ground ground = groundService.findByGroundCode(groundCode);
+        ground.setDeleted(false);
+        groundService.setGround(ground);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
