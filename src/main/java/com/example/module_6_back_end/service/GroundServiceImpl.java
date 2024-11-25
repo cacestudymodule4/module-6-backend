@@ -51,23 +51,30 @@ public class GroundServiceImpl implements GroundService {
 
     @Override
     public void saveGround(Ground ground) throws Exception {
-        System.out.println(ground);
+        Ground existingGround = groundRepository.findByGroundCode(ground.getGroundCode());
+
         if (ground.getId() == null) {
-            if (groundRepository.existsByGroundCode(ground.getGroundCode())) {
-                throw new Exception("Mã mặt bằng đã tồn tại");
+            if (existingGround != null) {
+                if (existingGround.getDeleted()) {
+                    throw new Exception("Mã mặt bằng đã bị xoá trước đó");
+                }
+                throw new Exception("Mã mặt bằng đã tồn tại.");
             }
-        } else {
-            Ground existingGround = groundRepository.findByGroundCode(ground.getGroundCode());
-            if (existingGround != null && !existingGround.getId().equals(ground.getId())) {
-                throw new Exception("Mã mặt bằng đã tồn tại");
+        }
+
+        if (existingGround != null && !existingGround.getId().equals(ground.getId())) {
+            if (existingGround.getDeleted()) {
+                throw new Exception("Mã mặt bằng đã bị xoá trước đó");
             }
+            throw new Exception("Mã mặt bằng đã tồn tại.");
         }
         groundRepository.save(ground);
     }
 
+
     @Override
-    public Page<Ground> searchGrounds(String groundCode, Double area, Double price, Pageable pageable) {
-        return groundRepository.searchGround(groundCode, area, price, pageable);
+    public Page<Ground> searchGrounds(String groundCode, Double areaFrom, Double areaTo, Double priceFrom, Double priceTo, Pageable pageable) {
+        return groundRepository.searchGrounds(groundCode, areaFrom, areaTo, priceFrom, priceTo, pageable);
     }
 
     @Override
@@ -83,5 +90,15 @@ public class GroundServiceImpl implements GroundService {
     @Override
     public Ground findGroundById(Long id) {
         return groundRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Ground findByGroundCode(String groundCode) {
+        return groundRepository.findByGroundCode(groundCode);
+    }
+
+    @Override
+    public List<Ground> findByFloorIdAndStatusTrue(Long floorId) {
+        return groundRepository.findByFloorIdAndStatusTrue(floorId);
     }
 }

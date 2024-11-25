@@ -9,18 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Floor {
+
+public class GroundCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String floorCode;
-    private String name;
-    private Double area;
-    private Long capacity;
-    @ManyToOne
-    private Building building;
-    private Boolean deleted = false;
 
-    @ManyToOne
-    private FloorCategory floorCategory;
+    private String name;
 }
