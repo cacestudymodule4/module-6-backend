@@ -34,7 +34,7 @@ public class GroundController {
     public ResponseEntity<List<Ground>> findGround(
             @RequestParam String searchGround
     ) {
-        return ResponseEntity.ok().body(groundService.findByGroundCodeContaining(searchGround));
+        return ResponseEntity.ok().body(groundService.getByGroundCodeContaining(searchGround));
     }
 
     @GetMapping("/get-all")

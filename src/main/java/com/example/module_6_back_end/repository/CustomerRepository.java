@@ -44,5 +44,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
                                                @Param("identification") String identification,
                                                Pageable pageable);
 
+    @Query("SELECT c FROM Customer c ORDER BY c.id DESC")
+    List<Customer> findAllCustomersSortedByIdDesc();
 }
 

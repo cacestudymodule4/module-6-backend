@@ -33,8 +33,13 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
 
     List<Ground> findByGroundCodeContaining(String groundCode);
 
-    @Query("SELECT g FROM Ground g WHERE g NOT IN (SELECT c.ground FROM Contract c)")
-    List<Ground> findGroundsWithoutContract();
+    @Query("SELECT g FROM Ground g " +
+            "LEFT JOIN Contract c ON c.ground = g " +
+            "GROUP BY g " +
+            "HAVING COUNT(c) < 2")
+    List<Ground> findGroundsWithoutTwoOrMoreContracts();
+
+
 
     boolean existsByGroundCode(String groundCode);
 

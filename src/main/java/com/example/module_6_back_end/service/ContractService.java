@@ -18,7 +18,9 @@ public interface ContractService {
 
     void saveContract(Contract contract);
 
-    Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String name,Pageable pageable);
+    Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String name,Long id,Pageable pageable);
+
+    Page<Contract> searchAllContract(LocalDate startDate, LocalDate endDate, String taxCode, String name,Pageable pageable);
 
     void deleteContract(Long id);
 
@@ -36,13 +38,12 @@ public interface ContractService {
 
     List<Contract> getContractsByStartDateAndEndDate(ReportRequest reportRequest);
 
-    Page<Contract> getActiveContracts(Pageable pageable);
+    Page<Contract> getAllContracts(Long id,Pageable pageable);
 
-    Page<Contract> getExpiredContracts(Pageable pageable);
-
-    Page<Contract> getNotYetContract(Pageable pageable);
-
-    Page<Contract> getAllContracts(Pageable pageable);
+    Page<Contract> getContractForAdmin(Pageable pageable);
 
     List<Ground> getAddGroundH( LocalDate oneMonthFromNow);
+
+    Page<Contract> filterContract(Long id,Pageable pageable,String filter);
+
 }

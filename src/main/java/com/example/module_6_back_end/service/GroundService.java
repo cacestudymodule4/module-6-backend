@@ -13,9 +13,9 @@ public interface GroundService {
 
     List<Ground> getGroundByStatus(Boolean status);
 
-    List<Ground> findByGroundCodeContaining(String groundCode);
+    List<Ground> getByGroundCodeContaining(String groundCode);
 
-    List<Ground> findGroundNotInContract();
+    List<Ground> getGroundNotInContract();
 
     Page<Ground> getAllGrounds(Pageable pageable);
 
