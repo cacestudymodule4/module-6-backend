@@ -14,7 +14,6 @@ public class Staff extends Person {
     private String codeStaff;
     private double salary;
     private LocalDate startDate;
-    private String position;
     private boolean isDisabled;
 
     @Override
@@ -27,4 +26,7 @@ public class Staff extends Person {
                 ", isDisabled=" + isDisabled +
                 "} " + super.toString();
     }
+
+    @ManyToOne
+    private Position position;
 }

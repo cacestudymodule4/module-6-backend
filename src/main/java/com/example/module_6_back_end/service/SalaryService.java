@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface SalaryService {
-    Page<SalaryResponse> getSalary(PageRequestDTO pageRequest);
+    Page<SalaryResponse> getSalary(PageRequestDTO pageRequest, String positionName);
 
     List<SalaryResponse> getSalary();
 }

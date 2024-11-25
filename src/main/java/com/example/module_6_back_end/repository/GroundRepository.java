@@ -14,12 +14,18 @@ import java.util.List;
 public interface GroundRepository extends JpaRepository<Ground, Long> {
     @Query("SELECT g FROM Ground g WHERE "
             + "(:groundCode IS NULL OR g.groundCode LIKE CONCAT('%', :groundCode, '%')) "
-            + "AND (:area IS NULL OR g.area = :area) "
-            + "AND (:price IS NULL OR g.price = :price)")
-    Page<Ground> searchGround(@Param("groundCode") String groundCode,
-                            @Param("area") Double area,
-                            @Param("price") Double price,
-                            Pageable pageable);
+            + "AND (:areaFrom IS NULL OR g.area >= :areaFrom) "
+            + "AND (:areaTo IS NULL OR g.area <= :areaTo) "
+            + "AND (:priceFrom IS NULL OR g.price >= :priceFrom) "
+            + "AND (:priceTo IS NULL OR g.price <= :priceTo) "
+            + "ORDER BY g.area ASC"
+    )
+    Page<Ground> searchGrounds(@Param("groundCode") String groundCode,
+                               @Param("areaFrom") Double areaFrom,
+                               @Param("areaTo") Double areaTo,
+                               @Param("priceFrom") Double priceFrom,
+                               @Param("priceTo") Double priceTo,
+                               Pageable pageable);
 
     Page<Ground> findAllByDeletedFalse(Pageable pageable);
 
@@ -27,10 +33,17 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
 
     List<Ground> findByGroundCodeContaining(String groundCode);
 
-    @Query("SELECT g FROM Ground g WHERE g NOT IN (SELECT c.ground FROM Contract c)")
-    List<Ground> findGroundsWithoutContract();
+    @Query("SELECT g FROM Ground g " +
+            "LEFT JOIN Contract c ON c.ground = g " +
+            "GROUP BY g " +
+            "HAVING COUNT(c) < 2")
+    List<Ground> findGroundsWithoutTwoOrMoreContracts();
+
+
 
     boolean existsByGroundCode(String groundCode);
 
     Ground findByGroundCode(String groundCode);
+
+    List<Ground> findByFloorIdAndStatusTrue(Long floorId);
 }

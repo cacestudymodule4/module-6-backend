@@ -29,7 +29,7 @@
     </div>
     <div style="text-align: center; margin-bottom: 16px;">
         <span>
-            HỢP ĐỒNG THUÊ NHÀ
+            HỢP ĐỒNG THUÊ MẶT BẰNG
         </span>
     </div>
     <div>
@@ -167,7 +167,7 @@
     </div>
     <div>
         <span>
-            4.1. Bên B sẽ giao cho Bên A một khoản tiền là <span th:text="${#numbers.formatCurrency(contract.deposit).replace('₫', '')}"></span> VNĐ (bằng chữ:...............................................) ngay sau khi ký hợp đồng này. Số tiền này là tiền đặt cọc để đảm bảm thực hiện Hợp đồng cho thuê nhà.
+            4.1. Bên B sẽ giao cho Bên A một khoản tiền là <span th:text="${#numbers.formatCurrency(contract.deposit).replaceAll('[₫\\$]+', '')}"></span> VNĐ (bằng chữ:...............................................) ngay sau khi ký hợp đồng này. Số tiền này là tiền đặt cọc để đảm bảm thực hiện Hợp đồng cho thuê nhà.
         </span>
     </div>
     <div>
@@ -193,7 +193,7 @@
     <div>
         <span>
             5.1 Tiền thuê nhà đối với diện tích thuê nêu tại mục 1.1 Điều 1 là: <span
-                th:text="${#numbers.formatCurrency(contract.ground.price).replace('₫', '')}"></span> VNĐ/tháng (Bằng chữ:...........................................)
+                th:text="${#numbers.formatCurrency(contract.ground.price).replace('[₫\\$]+', '')}"></span> VNĐ/tháng (Bằng chữ:...........................................)
         </span>
     </div>
     <div>

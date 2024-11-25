@@ -13,9 +13,9 @@ public interface GroundService {
 
     List<Ground> getGroundByStatus(Boolean status);
 
-    List<Ground> findByGroundCodeContaining(String groundCode);
+    List<Ground> getByGroundCodeContaining(String groundCode);
 
-    List<Ground> findGroundNotInContract();
+    List<Ground> getGroundNotInContract();
 
     Page<Ground> getAllGrounds(Pageable pageable);
 
@@ -23,11 +23,15 @@ public interface GroundService {
 
     void saveGround(Ground ground) throws Exception;
 
-    Page<Ground> searchGrounds(String groundCode, Double area, Double price, Pageable pageable);
+    Page<Ground> searchGrounds(String groundCode, Double areaFrom, Double areaTo, Double priceFrom, Double priceTo, Pageable pageable);
 
     void setGround(Ground ground);
 
     Page<Ground> findAllByDeletedFalse(Pageable pageable);
 
     Ground findGroundById(Long id);
+
+    Ground findByGroundCode(String groundCode);
+
+    List<Ground> findByFloorIdAndStatusTrue(Long floorId);
 }
