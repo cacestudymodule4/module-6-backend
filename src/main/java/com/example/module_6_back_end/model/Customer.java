@@ -10,11 +10,4 @@ import lombok.*;
 @AllArgsConstructor
 public class Customer extends Person {
     private String company;
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "company='" + company + '\'' +
-                "} " + super.toString();
-    }
 }
