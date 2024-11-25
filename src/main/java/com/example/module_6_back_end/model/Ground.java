@@ -20,7 +20,6 @@ public class Ground {
     private double area;
     private double price;
     private Boolean deleted = false;
-
     @ManyToOne
     private GroundCategory groundCategory;
 }

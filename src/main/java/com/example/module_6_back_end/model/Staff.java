@@ -14,5 +14,6 @@ public class Staff extends Person {
     private String codeStaff;
     private double salary;
     private LocalDate startDate;
-    private String position;
+    @ManyToOne
+    private Position position;
 }

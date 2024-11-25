@@ -15,7 +15,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("SELECT s FROM Staff s WHERE " +
             "(:codeStaff IS NULL OR s.codeStaff LIKE :codeStaff)" +
             "AND (:name Is NULL OR s.name LIKE :name)" +
-            "AND (:position IS NULL OR s.position LIKE :position)"
+            "AND (:position IS NULL OR s.position.name LIKE :position)"
     )
     Page<Staff> findByCodeStaffOrNameOrPosition(@Param("codeStaff") String codeStaff,
                                                 @Param("name") String name,
@@ -26,7 +26,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT s FROM Staff s WHERE s.codeStaff LIKE :q OR s.name LIKE :q OR s.address LIKE :q OR s.phone LIKE :q OR s.email LIKE :q OR s.position LIKE :q")
+    @Query("SELECT s FROM Staff s WHERE s.codeStaff LIKE :q OR s.name LIKE :q OR s.address LIKE :q OR s.phone LIKE :q OR s.email LIKE :q OR s.position.name LIKE :q")
     Page<Staff> findStaff(@Param("q") String q, Pageable pageable);
 
     boolean existsByCodeStaff(String codeStaff);
