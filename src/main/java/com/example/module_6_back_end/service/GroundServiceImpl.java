@@ -30,13 +30,13 @@ public class GroundServiceImpl implements GroundService {
     }
 
     @Override
-    public List<Ground> findByGroundCodeContaining(String groundCode) {
+    public List<Ground> getByGroundCodeContaining(String groundCode) {
         return groundRepository.findByGroundCodeContaining(groundCode);
     }
 
     @Override
-    public List<Ground> findGroundNotInContract() {
-        return groundRepository.findGroundsWithoutContract();
+    public List<Ground> getGroundNotInContract() {
+        return groundRepository.findGroundsWithoutTwoOrMoreContracts();
     }
 
     @Override

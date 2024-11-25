@@ -2,8 +2,11 @@ package com.example.module_6_back_end.resources;
 
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Ground;
+import com.example.module_6_back_end.model.Staff;
+import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.service.ContractService;
 import com.example.module_6_back_end.service.GroundService;
+import com.example.module_6_back_end.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +25,13 @@ public class ContractController {
     private static final Logger log = LoggerFactory.getLogger(ContractController.class);
     private final ContractService contractService;
     private final GroundService groundService;
+    private final UserService userService;
 
     @Autowired
-    public ContractController(ContractService contractService, GroundService groundService) {
+    public ContractController(ContractService contractService, GroundService groundService,UserService userService) {
         this.contractService = contractService;
         this.groundService = groundService;
+        this.userService = userService;
     }
 
     @GetMapping("/list")
@@ -61,21 +66,29 @@ public class ContractController {
             @RequestParam(required = false) String nameCustomer,
             @RequestParam(required = false) String startDateStr,
             @RequestParam(required = false) String endDateStr,
-            @PageableDefault(size = 1) Pageable pageable) {  // Nhận đối tượng Pageable cho phân trang
+            @PageableDefault(size = 2)
+            Pageable pageable) {
+        User auTh = userService.getCurrentUser();
+        Long id = auTh.getStaff().getId();
         LocalDate startDate = startDateStr != null && !startDateStr.isEmpty() ? LocalDate.parse(startDateStr) : null;
         LocalDate endDate = endDateStr != null && !endDateStr.isEmpty() ? LocalDate.parse(endDateStr) : null;
-        Page<Contract> contracts = contractService.searchContract(startDate, endDate, taxCode, nameCustomer, pageable);
-        return ResponseEntity.ok().body(contracts);
+        if(auTh.getId() == 1){
+            return ResponseEntity.ok().body(contractService.searchAllContract(startDate, endDate, taxCode, nameCustomer, pageable));
+        }
+        return ResponseEntity.ok().body(contractService.searchContract(startDate, endDate, taxCode, nameCustomer,id, pageable));
     }
 
     @PostMapping("/add")
     public ResponseEntity<Void> add(
             @RequestBody Contract contract
     ) throws Exception {
+        User auTh = userService.getCurrentUser();
+        Staff staff = auTh.getStaff();
         contract.getGround().setStatus(true);
         groundService.setGround(contract.getGround());
         String codeTax = contractService.generateUniqueTaxCode();
         String codeContract = contractService.generateCode();
+        contract.setStaff(staff);
         contract.setTaxCode(codeTax);
         contract.setCode(codeContract);
         contractService.saveContract(contract);
@@ -94,24 +107,18 @@ public class ContractController {
         contractEdit.setEndDate(contract.getEndDate());
         contractEdit.setDescription(contract.getDescription());
         contractService.saveContract(contractEdit);
-        System.out.println(contract);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/filter")
     public ResponseEntity<Page<Contract>> filterContracts(
             @RequestParam(required = false) String selectedFilter,
-            @PageableDefault(size = 5) Pageable pageable
+            @PageableDefault(size = 2) Pageable pageable
     ) {
-        if ("Có hiệu lực".equals(selectedFilter)) {
-            return ResponseEntity.ok().body(contractService.getActiveContracts(pageable));
-        } else if ("Hết hiệu lực".equals(selectedFilter)) {
-            return ResponseEntity.ok().body(contractService.getExpiredContracts(pageable));
-        } else if ("Chưa có hiệu lực".equals(selectedFilter)) {
-            return ResponseEntity.ok().body(contractService.getNotYetContract(pageable));
-        } else {
-            return ResponseEntity.ok().body(contractService.getAllContracts(pageable));
-        }
+        User auTh = userService.getCurrentUser();
+        Long id = auTh.getStaff().getId();
+       Page<Contract> listFilter = contractService.filterContract(id,pageable,selectedFilter);
+       return ResponseEntity.ok().body(listFilter);
     }
 
     @GetMapping("/findContract/{id}")
@@ -120,29 +127,32 @@ public class ContractController {
     }
 
     @GetMapping("/list-page")
-    public ResponseEntity<Page<Contract>> listContracts(@PageableDefault(size = 1) Pageable pageable) {
-        return ResponseEntity.ok().body(contractService.getAllContracts(pageable));
+    public ResponseEntity<Page<Contract>> listContracts(
+            Pageable pageable) {
+        User auTh = userService.getCurrentUser();
+        Long id = auTh.getStaff().getId();
+        if(auTh.getId() == 1){
+            return ResponseEntity.ok().body(contractService.getContractForAdmin(pageable));
+        }
+        return ResponseEntity.ok().body(contractService.getAllContracts(id,pageable));
     }
 
     @GetMapping("/list-rent")
     public ResponseEntity<List<Ground>> listAllOrExpiringSoon() {
         LocalDate oneMonthFromNow = LocalDate.now().plusMonths(1);
         List<Ground> grounds = contractService.getAddGroundH(oneMonthFromNow);
-        List<Ground> groundsWithoutContract = groundService.findGroundNotInContract();
-        Set<Ground> combinedGrounds = new HashSet<>();
-        combinedGrounds.addAll(grounds);
-        combinedGrounds.addAll(groundsWithoutContract);
-        return ResponseEntity.ok().body(new ArrayList<>(combinedGrounds));
+        return ResponseEntity.ok().body(new ArrayList<>(grounds));
     }
 
     @GetMapping("/checkDay")
     public ResponseEntity<LocalDate> checkContracts(
-            @RequestParam(required = false) Boolean status
+            @RequestParam(required = false) Boolean status,
+            @RequestParam(required = false) String groundCode
+
     ) {
         List<Contract> list = contractService.getContracts();
-        System.out.println(status);
         for (Contract contract : list) {
-            if (contract.getGround().getStatus().equals(status)) {
+            if (contract.getGround().getStatus().equals(status) && contract.getGround().getGroundCode().equals(groundCode)) {
                 return ResponseEntity.ok().body(contract.getEndDate());
             }
         }
