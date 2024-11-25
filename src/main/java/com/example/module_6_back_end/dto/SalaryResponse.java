@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.dto;
 
+import com.example.module_6_back_end.model.Position;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class SalaryResponse {
     private String codeStaff;
     private String name;
-    private String position;
+    private Position position;
     private double salary;
 }

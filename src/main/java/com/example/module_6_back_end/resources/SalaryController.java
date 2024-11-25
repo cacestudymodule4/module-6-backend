@@ -4,9 +4,7 @@ import com.example.module_6_back_end.dto.PageRequestDTO;
 import com.example.module_6_back_end.exception.UnauthorizedException;
 import com.example.module_6_back_end.service.SalaryService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class SalaryController {
@@ -17,9 +15,9 @@ public class SalaryController {
     }
 
     @GetMapping("/api/salary")
-    public ResponseEntity<?> getSalary(@ModelAttribute PageRequestDTO pageRequest) {
+    public ResponseEntity<?> getSalary(@ModelAttribute PageRequestDTO pageRequest, @RequestParam("positionName") String positionName) {
         try {
-            return ResponseEntity.ok(salaryService.getSalary(pageRequest));
+            return ResponseEntity.ok(salaryService.getSalary(pageRequest, positionName));
         } catch (UnauthorizedException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

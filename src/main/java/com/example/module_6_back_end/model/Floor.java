@@ -20,7 +20,6 @@ public class Floor {
     @ManyToOne
     private Building building;
     private Boolean deleted = false;
-
     @ManyToOne
     private FloorCategory floorCategory;
 }

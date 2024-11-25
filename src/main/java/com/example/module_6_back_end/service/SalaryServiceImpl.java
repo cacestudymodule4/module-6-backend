@@ -22,13 +22,14 @@ public class SalaryServiceImpl implements SalaryService {
     }
 
     @Override
-    public Page<SalaryResponse> getSalary(PageRequestDTO pageRequest) {
+    public Page<SalaryResponse> getSalary(PageRequestDTO pageRequest, String positionName) {
+        System.out.println(positionName);
         userService.isAdmin();
         Sort sort = pageRequest.getSortDir().equalsIgnoreCase("asc")
                 ? Sort.by(pageRequest.getSort()).ascending()
                 : Sort.by(pageRequest.getSort()).descending();
         Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), sort);
-        return staffRepository.findStaff("%" + pageRequest.getQ() + "%", pageable)
+        return staffRepository.findStaff("%" + pageRequest.getQ() + "%", pageable, "%" + positionName + "%")
                 .map(staffEntity -> {
                     SalaryResponse salaryResponse = new SalaryResponse();
                     BeanUtils.copyProperties(staffEntity, salaryResponse);
