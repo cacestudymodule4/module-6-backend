@@ -17,7 +17,8 @@ public class CustomerServiceImpl implements CustomerService {
     private ContractService contractService;
 
     @Override
-    public Page<Customer> getAllCustomers(Pageable pageable) {
+
+    public Page<Customer> getAllCustomers(Pageable pageable, Customer newCustomer) {
         return customerRepository.findAllCustomersSorted(pageable);
     }
 
@@ -32,8 +33,8 @@ public class CustomerServiceImpl implements CustomerService {
         if (customer == null) {
             throw new IllegalArgumentException("Không tìm thấy khách hàng");
         }
-        contractService.deleteContracts(customer);
-        customerRepository.deleteById(id);
+        customer.setIsDisabled(true);
+        customerRepository.save(customer);
     }
 
     @Override
@@ -41,13 +42,29 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerRepository.existsByEmail(customer.getEmail())) {
             throw new IllegalArgumentException("Email bị trùng lặp");
         }
-        if (customerRepository.existsByIdentification(customer.getIdentification())) {
-            throw new IllegalArgumentException("CMND bị trùng lặp");
-        }
         if (customerRepository.existsByPhone(customer.getPhone())) {
             throw new IllegalArgumentException("Số điện thoại bị trùng lặp");
         }
+        Customer foundCustomer = customerRepository.findCustomerByIdentification(customer.getIdentification());
+        if (foundCustomer != null) {
+            if (foundCustomer.getIsDisabled()) {
+                throw new IllegalArgumentException("a");
+            } else {
+                throw new IllegalArgumentException("Số CMND đã tồn tại.");
+            }
+        }
+        customer.setIsDisabled(false);
         return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer restoreCustomer(Customer customer) {
+        Customer foundCustomer = customerRepository.findCustomerByIdentification(customer.getIdentification());
+        if (foundCustomer != null && foundCustomer.getIsDisabled()) {
+            foundCustomer.setIsDisabled(false);
+            return customerRepository.save(foundCustomer);
+        }
+        return null;
     }
 
     @Override
@@ -58,10 +75,10 @@ public class CustomerServiceImpl implements CustomerService {
                 customerRepository.existsByEmail(updatedCustomer.getEmail())) {
             throw new IllegalArgumentException("Email bị trùng lặp");
         }
-        if (!existingCustomer.getIdentification().equals(updatedCustomer.getIdentification()) &&
-                customerRepository.existsByIdentification(updatedCustomer.getIdentification())) {
-            throw new IllegalArgumentException("Chứng minh nhân dân bị trùng lặp");
-        }
+//        if (!existingCustomer.getIdentification().equals(updatedCustomer.getIdentification()) &&
+//                customerRepository.existsByIdentification(updatedCustomer.getIdentification())) {
+//            throw new IllegalArgumentException("Chứng minh nhân dân bị trùng lặp");
+//        }
         if (!existingCustomer.getPhone().equals(updatedCustomer.getPhone()) &&
                 customerRepository.existsByPhone(updatedCustomer.getPhone())) {
             throw new IllegalArgumentException("Số điện thoại bị trùng lặp");

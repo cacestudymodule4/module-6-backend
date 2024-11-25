@@ -22,7 +22,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     boolean existsByEmail(String email);
 
-    boolean existsByIdentification(String identification);
+    Customer findCustomerByIdentification(String identification);
 
     boolean existsByPhone(String phone);
 
