@@ -24,7 +24,6 @@ public class Contract {
     private double deposit;
     private Long term;
     @ManyToOne
-    @JoinColumn(name = "staff_id")
     private Staff staff;
     @ManyToOne
     private Ground ground;

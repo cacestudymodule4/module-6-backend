@@ -12,7 +12,7 @@ public interface StaffService {
 
     Staff getStaffId(Long id);
 
-    String disableStaff(Long staffId);
+    void disableStaff(Long staffId);
 
     List<Staff> getActiveStaff();
 
@@ -26,7 +26,7 @@ public interface StaffService {
 
     List<Staff> getStaffByNameContaining(String name);
 
-    boolean existsByCodeStaff(String codeStaff);
+    boolean existsByIdentification(String identification);
 
     boolean existsByEmail(String email);
 

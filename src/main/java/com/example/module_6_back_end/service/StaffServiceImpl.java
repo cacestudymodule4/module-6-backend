@@ -1,6 +1,7 @@
 package com.example.module_6_back_end.service;
 
 import com.example.module_6_back_end.exception.UnauthorizedException;
+import com.example.module_6_back_end.exception.ValidationException;
 import com.example.module_6_back_end.model.Contract;
 import com.example.module_6_back_end.model.Role;
 import com.example.module_6_back_end.model.Staff;
@@ -12,10 +13,14 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -47,23 +52,26 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public String disableStaff(Long staffId) {
+    public void disableStaff(Long staffId) {
+        userService.isAdmin();
+
         // Tìm nhân viên
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy nhân viên"));
-
-        // Kiểm tra hợp đồng còn hiệu lực
-        List<Contract> contracts = contractRepository.findByStaff_Id(staffId);
-        for (Contract contract : contracts) {
-            if (contract.getEndDate() == null || contract.getEndDate().isAfter(LocalDate.now())) {
-                throw new IllegalStateException("Nhân viên này đang có hợp đồng còn hiệu lực, không thể vô hiệu hóa.");
-            }
-        }
-
-        // Đánh dấu vô hiệu hóa
         staff.setDisabled(true);
         staffRepository.save(staff);
-        return "Nhân viên đã được vô hiệu hóa.";
+//        // Kiểm tra hợp đồng còn hiệu lực
+//        List<Contract> contracts = contractRepository.findByStaff_Id(staffId);
+//        for (Contract contract : contracts) {
+//            if (contract.getEndDate() == null || contract.getEndDate().isAfter(LocalDate.now())) {
+//                throw new IllegalStateException("Nhân viên này đang có hợp đồng còn hiệu lực, không thể vô hiệu hóa.");
+//            }
+//        }
+//
+//        // Đánh dấu vô hiệu hóa
+//        staff.setDisabled(true);
+//        staffRepository.save(staff);
+//        return "Nhân viên đã được vô hiệu hóa.";
     }
 
     @Override
@@ -102,12 +110,21 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        User auTh = userService.getCurrentUser();
-        List<Role> roles = roleRepository.findByUser(auTh);
-        boolean isAdmin = roles.stream()
-                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
-        if (!isAdmin) {
-            throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
+        userService.isAdmin();
+        Map<String, String> error = new HashMap<>();
+        if (staffRepository.existsByIdentification(staff.getIdentification())) {
+            Staff oldStaff = staffRepository.findByIdentification(staff.getIdentification());
+            oldStaff.setDisabled(false);
+            return staffRepository.save(oldStaff);
+        }
+        if (staffRepository.existsByEmail(staff.getEmail())) {
+            error.put("Email", "Email đã có người sử dụng");
+        }
+        if (staffRepository.existsByPhone(staff.getPhone())) {
+            error.put("Phone", "SĐT đã có người sử dụng");
+        }
+        if (!error.isEmpty()) {
+            throw new ValidationException(error);
         }
         Staff newStaff = staffRepository.save(staff);
         registerService.registerUser(newStaff);
@@ -122,8 +139,9 @@ public class StaffServiceImpl implements StaffService {
         return staffRepository.existsByPhone(phone);
     }
 
-    public boolean existsByCodeStaff(String codeStaff) {
-        return staffRepository.existsByCodeStaff(codeStaff);
+    @Override
+    public boolean existsByIdentification(String identification) {
+        return staffRepository.existsByIdentification(identification);
     }
 
     @Override

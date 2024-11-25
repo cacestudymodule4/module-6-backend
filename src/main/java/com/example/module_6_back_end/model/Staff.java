@@ -15,18 +15,6 @@ public class Staff extends Person {
     private double salary;
     private LocalDate startDate;
     private boolean isDisabled;
-
-    @Override
-    public String toString() {
-        return "Staff{" +
-                "codeStaff='" + codeStaff + '\'' +
-                ", salary=" + salary +
-                ", startDate=" + startDate +
-                ", position='" + position + '\'' +
-                ", isDisabled=" + isDisabled +
-                "} " + super.toString();
-    }
-
     @ManyToOne
     private Position position;
 }

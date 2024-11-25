@@ -1,5 +1,6 @@
 package com.example.module_6_back_end.resources;
 
+import com.example.module_6_back_end.exception.UnauthorizedException;
 import com.example.module_6_back_end.model.Staff;
 import com.example.module_6_back_end.repository.StaffRepository;
 import com.example.module_6_back_end.service.StaffService;
@@ -46,12 +47,14 @@ public class StaffController {
     @PatchMapping("/disable/{id}")
     public ResponseEntity<?> disableStaff(@PathVariable Long id) {
         try {
-            String result = staffService.disableStaff(id);
-            return ResponseEntity.ok(result);
+            staffService.disableStaff(id);
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
@@ -63,17 +66,7 @@ public class StaffController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
-        if (staffService.existsByCodeStaff(staff.getCodeStaff())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Mã nhân viên đã tồn tại");
-        }
 
-        if (staffService.existsByEmail(staff.getEmail())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email đã tồn tại");
-        }
-
-        if (staffService.existsByPhone(staff.getPhone())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Số điện thoại đã tồn tại");
-        }
 
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(staffService.saveStaff(staff));
