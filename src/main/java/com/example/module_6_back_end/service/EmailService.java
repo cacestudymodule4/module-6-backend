@@ -16,25 +16,28 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final PdfService pdfService;
+    private final ContractPdfService contractPdfService;
 
-    public EmailService(JavaMailSender mailSender, SpringTemplateEngine templateEngine, PdfService pdfService) {
+    public EmailService(JavaMailSender mailSender, SpringTemplateEngine templateEngine, PdfService pdfService, ContractPdfService contractPdfService) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.pdfService = pdfService;
+        this.contractPdfService = contractPdfService;
     }
 
     public void sendMail(Contract contract) throws MessagingException {
-        byte[] pdfData = pdfService.getPdf(contract.getId());
+        byte[] pdfData = contractPdfService.generatePdf(contract.getId());
+        System.out.println("89");
         Context context = new Context();
         context.setVariable("contract", contract);
         String html = templateEngine.process("email", context);
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message, "UTF-8");
-            messageHelper.setTo(contract.getCustomer().getEmail());
-            messageHelper.setSubject("Hợp Đồng Thuê Mặt Bằng");
-            messageHelper.setText(html, true);
-            messageHelper.setFrom("support@yourcompany.com");
-            messageHelper.addAttachment("contract.pdf", new ByteArrayResource(pdfData));
-            mailSender.send(message);
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        messageHelper.setTo(contract.getCustomer().getEmail());
+        messageHelper.setSubject("Hợp Đồng Thuê Mặt Bằng");
+        messageHelper.setText(html, true);
+        messageHelper.setFrom("support@yourcompany.com");
+        messageHelper.addAttachment("contract.pdf", new ByteArrayResource(pdfData));
+        mailSender.send(message);
     }
 }
