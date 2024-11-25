@@ -12,4 +12,6 @@ public interface UserService {
     User getUserByStaff(Staff staff);
 
     void deleteUser(User user);
+
+    void isAdmin();
 }

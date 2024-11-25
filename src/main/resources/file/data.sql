@@ -43,7 +43,7 @@ VALUES (75.5, 2, 'F101', 'Room A101', 'Standard', 1),
        (110.0, 3, 'F808', 'Room H808', 'Deluxe', 1),
        (50.75, 1, 'F909', 'Room I909', 'Standard', 1),
        (65.25, 2, 'F1010', 'Room J1010', 'Standard', 1);
-INSERT INTO ground (area, ground_category, name, price, floor_id)
+INSERT INTO ground (area, ground_category, ground_code, price, floor_id)
 VALUES (75.5, 'Commercial', 'Unit A101-A', 40000.0, 1),
        (75.5, 'Residential', 'Unit A101-B', 42000.0, 1),
        (45.0, 'Office', 'Unit B202-A', 28000.0, 2),
@@ -115,12 +115,12 @@ VALUES (10.5, '2024-11-01', 1, 1),
        (15.7, '2024-11-03', 3, 3),
        (25.3, '2024-11-04', 4, 4),
        (30.8, '2024-11-05', 5, 5);
-INSERT INTO room_facilities (description, quantity, facilities_type_id, ground_id)
-VALUES ('Standard gym equipment', 10, 1, 1),
-       ('25-meter pool', 1, 2, 2),
-       ('Indoor parking for 20 cars', 20, 3, 3),
-       ('Lobby lounge seating', 15, 4, 4),
-       ('50-person conference room', 1, 5, 5);
+INSERT INTO room_facilities (description, quantity, facilities_type_id, ground_id, damaged, name)
+VALUES ('Standard gym equipment', 10, 1, 1, 0, 'Standard Gym'),
+       ('25-meter pool', 1, 2, 2, 0, '25m Pool'),
+       ('Indoor parking for 20 cars', 20, 3, 3, 0, 'Indoor Parking'),
+       ('Lobby lounge seating', 15, 4, 4, 0, 'Lobby Lounge'),
+       ('50-person conference room', 1, 5, 5, 0, 'Conference Room');
 INSERT INTO user (password, username, staff_id)
 VALUES ("$2a$12$3dmAbR8186UUyu9xe5DhPOWs350v5XKKnDtwXl34ItXJths2qMXaO", "person1@example.com", 1),
        ("$2a$12$3dmAbR8186UUyu9xe5DhPOWs350v5XKKnDtwXl34ItXJths2qMXaO", "person2@example.com", 2),

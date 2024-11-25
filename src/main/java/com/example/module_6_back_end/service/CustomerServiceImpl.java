@@ -24,7 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> getCustomers() {
-        return customerRepository.findAll();
+        return customerRepository.findAllCustomersSortedByIdDesc();
     }
 
     @Override

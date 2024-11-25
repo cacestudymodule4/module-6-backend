@@ -9,17 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ground {
+public class FloorCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private Floor floor;
-    private String groundCode;
-    private Boolean status;
-    private double area;
-    private double price;
-    private Boolean deleted = false;
-    @ManyToOne
-    private GroundCategory groundCategory;
+    private String name;
 }

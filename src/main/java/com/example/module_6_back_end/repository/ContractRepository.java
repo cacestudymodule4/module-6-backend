@@ -18,8 +18,21 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             + "(:startDate IS NULL OR c.startDate >= :startDate) "
             + "AND (:endDate IS NULL OR c.endDate <= :endDate) "
             + "AND (:taxCode IS NULL OR c.code LIKE CONCAT('%', :taxCode, '%')) "
-            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE CONCAT('%', :nameCustomer, '%'))")
+            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE CONCAT('%', :nameCustomer, '%')) "
+            + "AND (:staffId IS NULL OR c.staff.id = :staffId)")
     Page<Contract> searchContract(@Param("startDate") LocalDate startDate,
+                                  @Param("endDate") LocalDate endDate,
+                                  @Param("taxCode") String taxCode,
+                                  @Param("nameCustomer") String nameCustomer,
+                                  @Param("staffId") Long staffId,
+                                  Pageable pageable);
+
+    @Query("SELECT c FROM Contract c WHERE "
+            + "(:startDate IS NULL OR c.startDate >= :startDate) "
+            + "AND (:endDate IS NULL OR c.endDate <= :endDate) "
+            + "AND (:taxCode IS NULL OR c.code LIKE CONCAT('%', :taxCode, '%')) "
+            + "AND (:nameCustomer IS NULL OR c.customer.name LIKE CONCAT('%', :nameCustomer, '%')) ")
+    Page<Contract> searchAllContract(@Param("startDate") LocalDate startDate,
                                   @Param("endDate") LocalDate endDate,
                                   @Param("taxCode") String taxCode,
                                   @Param("nameCustomer") String nameCustomer,
@@ -38,16 +51,28 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("SELECT c FROM Contract c WHERE c.endDate <= :endDate")
     List<Contract> findByEndDate(@Param("endDate") LocalDate endDate);
 
+    Page<Contract> findByEndDateLessThanAndStaffId(LocalDate date,Long staffId, Pageable pageable);
+
+    Page<Contract> findByStartDateLessThanEqualAndEndDateGreaterThanAndStaffId(LocalDate startDate, LocalDate endDate,Long id, Pageable pageable);
+
+    Page<Contract> findByStartDateGreaterThanAndStaffId(LocalDate date, Long staffId, Pageable pageable);
+
+    Page<Contract> findByStaffIdOrderByIdDesc(Long staffId, Pageable pageable);
+
     Page<Contract> findByEndDateLessThan(LocalDate date, Pageable pageable);
 
     Page<Contract> findByStartDateLessThanEqualAndEndDateGreaterThan(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     Page<Contract> findByStartDateGreaterThan(LocalDate date, Pageable pageable);
 
-    @Query("SELECT c FROM Contract c ORDER BY c.id DESC")
-    Page<Contract> findAllContractsOrderByIdDesc(Pageable pageable);
+    Page<Contract> findAllByOrderByIdDesc(Pageable pageable);
 
-    @Query("SELECT c.ground FROM Contract c WHERE c.endDate <= :oneMonthFromNow")
-    List<Ground> findGroundsWithContractsEndingInOneMonth(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
+
+    @Query("SELECT g FROM Ground g " +
+            "LEFT JOIN Contract c ON c.ground = g " +
+            "GROUP BY g " +
+            "HAVING (COUNT(c) < 2) AND " +
+            "(MAX(c.endDate) <= :oneMonthFromNow OR COUNT(c) = 0)")
+    List<Ground> findGroundsWithConditions(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
 
 }

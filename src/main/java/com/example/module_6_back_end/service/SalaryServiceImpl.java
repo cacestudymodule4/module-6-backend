@@ -14,18 +14,22 @@ import java.util.List;
 @Service
 public class SalaryServiceImpl implements SalaryService {
     private final StaffRepository staffRepository;
+    private final UserService userService;
 
-    public SalaryServiceImpl(StaffRepository staffRepository) {
+    public SalaryServiceImpl(StaffRepository staffRepository, UserService userService) {
         this.staffRepository = staffRepository;
+        this.userService = userService;
     }
 
     @Override
-    public Page<SalaryResponse> getSalary(PageRequestDTO pageRequest) {
+    public Page<SalaryResponse> getSalary(PageRequestDTO pageRequest, String positionName) {
+        System.out.println(positionName);
+        userService.isAdmin();
         Sort sort = pageRequest.getSortDir().equalsIgnoreCase("asc")
                 ? Sort.by(pageRequest.getSort()).ascending()
                 : Sort.by(pageRequest.getSort()).descending();
         Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getSize(), sort);
-        return staffRepository.findStaff("%" + pageRequest.getQ() + "%", pageable)
+        return staffRepository.findStaff("%" + pageRequest.getQ() + "%", pageable, "%" + positionName + "%")
                 .map(staffEntity -> {
                     SalaryResponse salaryResponse = new SalaryResponse();
                     BeanUtils.copyProperties(staffEntity, salaryResponse);
@@ -35,6 +39,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public List<SalaryResponse> getSalary() {
+        userService.isAdmin();
         List<Staff> staffList = staffRepository.findAll();
         List<SalaryResponse> salaryResponseList = new ArrayList<>();
         for (Staff staff : staffList) {
