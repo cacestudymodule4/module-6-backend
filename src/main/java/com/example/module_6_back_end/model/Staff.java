@@ -15,14 +15,4 @@ public class Staff extends Person {
     private double salary;
     private LocalDate startDate;
     private String position;
-
-    @Override
-    public String toString() {
-        return "Staff{" +
-                "codeStaff='" + codeStaff + '\'' +
-                ", salary=" + salary +
-                ", startDate=" + startDate +
-                ", position='" + position + '\'' +
-                "} " + super.toString();
-    }
 }

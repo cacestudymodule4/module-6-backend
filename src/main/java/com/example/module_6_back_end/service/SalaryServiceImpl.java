@@ -14,13 +14,16 @@ import java.util.List;
 @Service
 public class SalaryServiceImpl implements SalaryService {
     private final StaffRepository staffRepository;
+    private final UserService userService;
 
-    public SalaryServiceImpl(StaffRepository staffRepository) {
+    public SalaryServiceImpl(StaffRepository staffRepository, UserService userService) {
         this.staffRepository = staffRepository;
+        this.userService = userService;
     }
 
     @Override
     public Page<SalaryResponse> getSalary(PageRequestDTO pageRequest) {
+        userService.isAdmin();
         Sort sort = pageRequest.getSortDir().equalsIgnoreCase("asc")
                 ? Sort.by(pageRequest.getSort()).ascending()
                 : Sort.by(pageRequest.getSort()).descending();
@@ -35,6 +38,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public List<SalaryResponse> getSalary() {
+        userService.isAdmin();
         List<Staff> staffList = staffRepository.findAll();
         List<SalaryResponse> salaryResponseList = new ArrayList<>();
         for (Staff staff : staffList) {
