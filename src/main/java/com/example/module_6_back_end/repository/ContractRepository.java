@@ -75,6 +75,4 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
             "(MAX(c.endDate) <= :oneMonthFromNow OR COUNT(c) = 0)")
     List<Ground> findGroundsWithConditions(@Param("oneMonthFromNow") LocalDate oneMonthFromNow);
 
-
-
 }

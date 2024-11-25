@@ -99,7 +99,7 @@ public class ContractServiceImpl implements ContractService {
         do {
             long randomNum = (long) (Math.random() * 100000);
             String randomNumStr = String.format("%05d", randomNum);
-            id = "MB" + randomNumStr;
+            id = "MHD" + randomNumStr;
             isUnique = true;
             for (Contract con : list) {
                 if (con.getTaxCode().equals(id)) {

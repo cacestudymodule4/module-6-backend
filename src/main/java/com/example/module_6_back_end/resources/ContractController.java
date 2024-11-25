@@ -66,7 +66,7 @@ public class ContractController {
             @RequestParam(required = false) String nameCustomer,
             @RequestParam(required = false) String startDateStr,
             @RequestParam(required = false) String endDateStr,
-            @PageableDefault(size = 2)
+            @PageableDefault(size = 5)
             Pageable pageable) {
         User auTh = userService.getCurrentUser();
         Long id = auTh.getStaff().getId();
@@ -113,7 +113,7 @@ public class ContractController {
     @GetMapping("/filter")
     public ResponseEntity<Page<Contract>> filterContracts(
             @RequestParam(required = false) String selectedFilter,
-            @PageableDefault(size = 2) Pageable pageable
+            @PageableDefault(size = 5) Pageable pageable
     ) {
         User auTh = userService.getCurrentUser();
         Long id = auTh.getStaff().getId();
