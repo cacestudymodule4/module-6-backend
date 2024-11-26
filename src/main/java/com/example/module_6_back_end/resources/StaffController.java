@@ -1,16 +1,11 @@
 package com.example.module_6_back_end.resources;
 
-import com.example.module_6_back_end.exception.UnauthorizedException;
-import com.example.module_6_back_end.exception.ValidationException;
 import com.example.module_6_back_end.model.Staff;
-import com.example.module_6_back_end.repository.StaffRepository;
 import com.example.module_6_back_end.service.StaffService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,26 +14,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
     private final StaffService staffService;
-    private final StaffRepository staffRepository;
 
-    public StaffController(StaffService staffService, StaffRepository staffRepository) {
+    public StaffController(StaffService staffService) {
         this.staffService = staffService;
-        this.staffRepository = staffRepository;
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getAllStaff(@PageableDefault(size = 5) Pageable pageable) {
-        Page<Staff> staffPage = staffRepository.findAllByIsDisabledFalse(pageable);
-        if (staffPage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+    public ResponseEntity<Page<Staff>> getAllStaff(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
+        Page<Staff> staffPage = staffService.getAllStaff(pageRequest);
         return new ResponseEntity<>(staffPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/list-add")
+    public ResponseEntity<List<Staff>> getAllStaffList() {
+        return ResponseEntity.ok().body(staffService.getStaffList());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteStaff(@PathVariable Long id) {
+        try {
+            System.out.println("Đang xóa nhân viên với ID: " + id);
+            staffService.deleteStaff(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Lỗi không xác định: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi không xác định");
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
+        if (staffService.existsByCodeStaff(staff.getCodeStaff())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Mã nhân viên đã tồn tại");
+        }
+
+        if (staffService.existsByEmail(staff.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email đã tồn tại");
+        }
+
+        if (staffService.existsByPhone(staff.getPhone())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Số điện thoại đã tồn tại");
+        }
+
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(staffService.saveStaff(staff));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong quá trình thêm");
+        }
     }
 
     @GetMapping("/search")
@@ -50,40 +84,6 @@ public class StaffController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
         Page<Staff> staffPage = staffService.searchStaff(codeStaff, name, position, pageable);
         return ResponseEntity.ok(staffPage);
-    }
-
-    @GetMapping("/list-add")
-    public ResponseEntity<List<Staff>> getAllStaffList() {
-        return ResponseEntity.ok().body(staffService.getStaffList());
-    }
-
-    @PutMapping("/disable/{id}")
-    public ResponseEntity<?> disableStaff(@PathVariable Long id) {
-        try {
-            staffService.disableStaff(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<?> addStaff(@RequestBody Staff staff) {
-        try {
-            Staff saveStaff = staffService.saveStaff(staff);
-            if (!saveStaff.isDisabled()) {
-                return ResponseEntity.status(HttpStatus.CREATED).body("Nhân viên đã được kích hoạt lại");
-            }
-            return ResponseEntity.status(HttpStatus.CREATED).body(saveStaff);
-        } catch (ValidationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrors());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong quá trình thêm nhân viên");
-        }
     }
 
     @GetMapping("/{id}")
