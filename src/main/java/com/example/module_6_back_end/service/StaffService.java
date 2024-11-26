@@ -6,17 +6,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StaffService {
-    Page<Staff> getAllStaff(PageRequest pageRequest);
+    Page<Staff> getAllStaff(Pageable pageable);
+
+    Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable);
+
+    Page<Staff> findAllByIsDisabledFalse(Pageable pageable);
 
     Staff getStaffId(Long id);
 
     void disableStaff(Long staffId);
-
-    List<Staff> getActiveStaff();
-
-    Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable);
 
     Staff updateStaff(Long id, Staff staff);
 
@@ -31,6 +32,8 @@ public interface StaffService {
     boolean existsByEmail(String email);
 
     boolean existsByPhone(String phone);
+
+    boolean existsByCodeStaff(String codeStaff);
 
     List<Staff> getStaffList();
 }

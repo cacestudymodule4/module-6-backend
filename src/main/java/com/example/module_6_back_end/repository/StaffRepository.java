@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Long> {
@@ -34,9 +33,11 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     boolean existsByEmail(String email);
 
-    List<Staff> findByCodeStaffNotContaining(String code);
-
-    List<Staff> findByIsDisabledFalse();
+    boolean existsByCodeStaff(String codeStaff);
 
     Staff findByIdentification(String identification);
+
+    List<Staff> findByCodeStaffNotContaining(String code);
+
+    Page<Staff> findAllByIsDisabledFalse(Pageable pageable);
 }
