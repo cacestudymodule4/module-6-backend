@@ -16,7 +16,7 @@ public interface ContractService {
 
     Contract getContractById(Long id);
 
-    void saveContract(Contract contract);
+    Contract saveContract(Contract contract);
 
     Page<Contract> searchContract(LocalDate startDate, LocalDate endDate, String taxCode, String name,Long id,Pageable pageable);
 

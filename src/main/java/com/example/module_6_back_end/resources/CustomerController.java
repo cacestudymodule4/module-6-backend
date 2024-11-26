@@ -21,10 +21,13 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping("/list")
-    public ResponseEntity<Page<Customer>> getAllCustomers(@RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<Page<Customer>> getAllCustomers(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         try {
-            return ResponseEntity.ok().body(customerService.getAllCustomers(pageable));
+            Page<Customer> customers = customerService.getAllCustomers(pageable, null);
+            return ResponseEntity.ok().body(customers);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -42,16 +45,32 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addCustomer(@RequestBody Customer customer) {
-        System.out.println(customer);
         try {
             Customer savedCustomer = customerService.saveCustomer(customer);
             return ResponseEntity.ok(savedCustomer);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dữ liệu không hợp lệ: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi trong hệ thống.");
         }
     }
+
+    @PostMapping("/restore")
+    public ResponseEntity<?> restoreCustomer(@RequestBody Customer customer) {
+        try {
+            Customer restoredCustomer = customerService.restoreCustomer(customer);
+            if (restoredCustomer != null) {
+                return ResponseEntity.ok(restoredCustomer);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Không tìm thấy khách hàng hoặc khách hàng không bị vô hiệu hóa");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi: " + e.getMessage());
+        }
+    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody Customer updatedCustomer) {
