@@ -165,8 +165,12 @@ public class ContractServiceImpl implements ContractService {
                 return contractRepository.findAllByOrderByIdDesc( pageable);
             }
         }
-
     }
+
+    @Override
+    public List<Contract> getActiveContractByStaff(Staff staff) {
+        LocalDate now = LocalDate.now();
+        return contractRepository.findByStaff(staff);
+    }
+
 }
-
-

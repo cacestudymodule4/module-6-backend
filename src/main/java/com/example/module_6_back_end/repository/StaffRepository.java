@@ -24,14 +24,20 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     List<Staff> findByNameContaining(String name);
 
-    boolean existsByEmail(String email);
-
-    @Query("SELECT s FROM Staff s WHERE (s.codeStaff LIKE :q OR s.name LIKE :q OR s.position.name LIKE :q) AND s.position.name LIKE :positionName ")
+    @Query("SELECT s FROM Staff s WHERE (s.codeStaff LIKE :q OR s.name LIKE :q OR s.position.name LIKE :q) AND s.position.name LIKE :positionName AND s.isDisabled = FALSE")
     Page<Staff> findStaff(@Param("q") String q, Pageable pageable, @Param("positionName") String positionName);
 
-    boolean existsByCodeStaff(String codeStaff);
+    boolean existsByIdentification(String identification);
 
     boolean existsByPhone(String phone);
 
+    boolean existsByEmail(String email);
+
+    boolean existsByCodeStaff(String codeStaff);
+
+    Staff findByIdentification(String identification);
+
     List<Staff> findByCodeStaffNotContaining(String code);
+
+    Page<Staff> findAllByIsDisabledFalse(Pageable pageable);
 }

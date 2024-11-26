@@ -14,6 +14,7 @@ public class Staff extends Person {
     private String codeStaff;
     private double salary;
     private LocalDate startDate;
+    private boolean isDisabled;
     @ManyToOne
     private Position position;
 }
