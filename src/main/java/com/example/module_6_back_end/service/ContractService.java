@@ -46,5 +46,4 @@ public interface ContractService {
 
     Page<Contract> filterContract(Long id,Pageable pageable,String filter);
 
-    List<Contract> getActiveContractByStaff(Staff staff);
 }

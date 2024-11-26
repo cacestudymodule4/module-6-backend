@@ -26,7 +26,13 @@ public class RegisterService {
     }
 
     public void registerUser(Staff staff) {
-        userService.isAdmin();
+        User auTh = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(auTh);
+        boolean isAdmin = roles.stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
+        if (!isAdmin) {
+            throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
+        }
         User newUser = new User();
         newUser.setUsername(staff.getEmail().toLowerCase());
         newUser.setPassword(passwordEncoder.encode("123456789"));

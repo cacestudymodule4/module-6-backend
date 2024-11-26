@@ -1,19 +1,17 @@
 package com.example.module_6_back_end.service;
 
-import com.example.module_6_back_end.exception.ValidationException;
+import com.example.module_6_back_end.exception.UnauthorizedException;
+import com.example.module_6_back_end.model.Role;
 import com.example.module_6_back_end.model.Staff;
-import com.example.module_6_back_end.repository.ContractRepository;
-import com.example.module_6_back_end.repository.PositionRepository;
+import com.example.module_6_back_end.model.User;
 import com.example.module_6_back_end.repository.RoleRepository;
 import com.example.module_6_back_end.repository.StaffRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -23,31 +21,18 @@ public class StaffServiceImpl implements StaffService {
     private final RegisterService registerService;
     private final UserService userService;
     private final RoleRepository roleRepository;
-    private final ContractRepository contractRepository;
-    private final PositionRepository positionRepository;
 
-    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService, UserService userService, RoleRepository roleRepository, ContractRepository contractRepository, PositionRepository positionRepository) {
+    public StaffServiceImpl(StaffRepository staffRepository, ContractService contractService, RegisterService registerService, UserService userService, RoleRepository roleRepository) {
         this.staffRepository = staffRepository;
         this.contractService = contractService;
         this.registerService = registerService;
         this.userService = userService;
         this.roleRepository = roleRepository;
-        this.contractRepository = contractRepository;
-        this.positionRepository = positionRepository;
-    }
-
-    public Page<Staff> getAllStaff(Pageable pageable) {
-        return staffRepository.findAll(pageable);
     }
 
     @Override
-    public Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable) {
-        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position, pageable);
-    }
-
-    @Override
-    public Page<Staff> findAllByIsDisabledFalse(Pageable pageable) {
-        return staffRepository.findAllByIsDisabledFalse(pageable);
+    public Page<Staff> getAllStaff(PageRequest pageRequest) {
+        return staffRepository.findAll(pageRequest);
     }
 
     @Override
@@ -56,13 +41,22 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public void disableStaff(Long staffId) {
-        userService.isAdmin();
-        Staff staff = staffRepository.findById(staffId)
-                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy nhân viên"));
-        staff.setDisabled(true);
-        staffRepository.save(staff);
-        System.out.println(staff);
+    public void deleteStaff(Long id) {
+        Staff staff = getStaffId(id);
+        if (staff == null) {
+            throw new IllegalArgumentException("Không tìm thấy nhân viên!!!");
+        }
+        contractService.deleteContracts(staff);
+        User user = userService.getUserByStaff(staff);
+        List<Role> roles = roleRepository.findByUser(user);
+        roleRepository.deleteAll(roles);
+        userService.deleteUser(user);
+        staffRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Staff> searchStaff(String codeStaff, String name, String position, Pageable pageable) {
+        return staffRepository.findByCodeStaffOrNameOrPosition(codeStaff, name, position, pageable);
     }
 
     @Override
@@ -78,7 +72,6 @@ public class StaffServiceImpl implements StaffService {
             staffToUpdate.setSalary(staff.getSalary());
             staffToUpdate.setStartDate(staff.getStartDate());
             staffToUpdate.setPosition(staff.getPosition());
-            staffToUpdate.setIdentification(staff.getIdentification());
             return staffRepository.save(staffToUpdate);
         }
         return null;
@@ -92,36 +85,13 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Staff saveStaff(Staff staff) {
-        userService.isAdmin();
-        Map<String, String> error = new HashMap<>();
-
-        if (staffRepository.existsByCodeStaff(staff.getCodeStaff())) {
-            error.put("codeStaff", "Mã nhân viên đã tồn tại");
+        User auTh = userService.getCurrentUser();
+        List<Role> roles = roleRepository.findByUser(auTh);
+        boolean isAdmin = roles.stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
+        if (!isAdmin) {
+            throw new UnauthorizedException("Bạn không có quyền thực hiện hành động này");
         }
-
-        Staff existingStaff = staffRepository.findByIdentification(staff.getIdentification());
-        if (existingStaff != null) {
-            if (existingStaff.isDisabled()) {
-                existingStaff.setDisabled(false);
-                existingStaff.setEmail(existingStaff.getEmail());
-                existingStaff.setPhone(existingStaff.getPhone());
-                return staffRepository.save(existingStaff);
-            } else {
-                error.put("CCCD/CMND", "CCCD/CMND đã tồn tại và đang hoạt động.");
-            }
-        }
-
-        if (staffRepository.existsByEmail(staff.getEmail())) {
-            error.put("Email", "Email đã có người sử dụng");
-        }
-        if (staffRepository.existsByPhone(staff.getPhone())) {
-            error.put("Phone", "SĐT đã có người sử dụng");
-        }
-
-        if (!error.isEmpty()) {
-            throw new ValidationException(error);
-        }
-
         Staff newStaff = staffRepository.save(staff);
         registerService.registerUser(newStaff);
         return newStaff;
@@ -135,14 +105,8 @@ public class StaffServiceImpl implements StaffService {
         return staffRepository.existsByPhone(phone);
     }
 
-    @Override
     public boolean existsByCodeStaff(String codeStaff) {
         return staffRepository.existsByCodeStaff(codeStaff);
-    }
-
-    @Override
-    public boolean existsByIdentification(String identification) {
-        return staffRepository.existsByIdentification(identification);
     }
 
     @Override
